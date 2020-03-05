@@ -20,26 +20,26 @@ public class HTMLController {
     @Autowired
     private RecipesRepo recipesRepo;
 
-    @GetMapping("index")
-    public String index(Map<String, Object> model){
-        Iterable<Recipe> recipes = recipesRepo.findAll();
-        Collections.reverse((List<?>) recipes);
-        model.put("recipes", recipes);
-        return ("index");
-    }
-
-    @GetMapping("recipe/add")
-    public ModelAndView addRecipeWindow(Map<String, Object> model){
-        return new ModelAndView("recipe/add");
-    }
-
     @GetMapping("/")
-    public RedirectView toIndex (Map<String, Object> model){
+    public RedirectView toIndex (){
         return new RedirectView("/index");
     }
 
+    @GetMapping("index")
+    public ModelAndView index(Map<String, Object> model){
+        Iterable<Recipe> recipes = recipesRepo.findAll();
+        Collections.reverse((List<?>) recipes);
+        model.put("recipes", recipes);
+        return new ModelAndView("index", model);
+    }
+
+    @GetMapping("recipe/add")
+    public ModelAndView addRecipeWindow(){
+        return new ModelAndView("recipe/add");
+    }
+
     @PostMapping("recipe/add")
-        public RedirectView addRecipe(@RequestParam String title, @RequestParam String text, Map<String, Object> model){
+        public RedirectView addRecipe(@RequestParam String title, @RequestParam String text){
             Recipe recipe = new Recipe(title, text);
             recipesRepo.save(recipe);
             return new RedirectView("/index");
