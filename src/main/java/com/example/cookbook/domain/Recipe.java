@@ -1,4 +1,5 @@
 package com.example.cookbook.domain;
+
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -17,11 +18,11 @@ public class Recipe {
     @CreatedDate
     private LocalDateTime time;
 
-    public Recipe(){
+    public Recipe() {
 
     }
 
-    public Recipe(String title, String text){
+    public Recipe(String title, String text) {
         this.title = title;
         this.text = text;
 
@@ -54,7 +55,7 @@ public class Recipe {
         this.text = text;
     }
 
-    public LocalDateTime  getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
