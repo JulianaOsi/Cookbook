@@ -1,7 +1,5 @@
 package com.example.cookbook.controller;
 
-import com.example.cookbook.domain.Recipe;
-import com.example.cookbook.repo.RecipesRepo;
 import com.example.cookbook.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
