@@ -1,7 +1,9 @@
 package com.example.cookbook.controller;
 
+import com.example.cookbook.domain.User;
 import com.example.cookbook.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,8 +35,11 @@ public class RecipeController {
     }
 
     @PostMapping("recipe/add")
-    public RedirectView addRecipe(@RequestParam String title, @RequestParam String text) {
-        recipeService.addRecipe(title, text);
+    public RedirectView addRecipe(
+            @AuthenticationPrincipal User user,
+            @RequestParam String title,
+            @RequestParam String text) {
+        recipeService.addRecipe(user, title, text);
         return new RedirectView("/recipes");
     }
 }
