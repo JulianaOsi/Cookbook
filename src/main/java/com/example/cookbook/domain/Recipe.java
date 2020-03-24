@@ -22,6 +22,8 @@ public class Recipe {
     @JoinColumn(name = "user_id")
     private User author;
 
+    private String filename;
+
     public Recipe() {
 
     }
@@ -74,5 +76,13 @@ public class Recipe {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

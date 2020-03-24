@@ -8,9 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Controller
@@ -38,8 +40,9 @@ public class RecipeController {
     public RedirectView addRecipe(
             @AuthenticationPrincipal User user,
             @RequestParam String title,
-            @RequestParam String text) {
-        recipeService.addRecipe(user, title, text);
+            @RequestParam String text,
+            @RequestParam("file") MultipartFile file) throws IOException {
+        recipeService.addRecipe(user, title, text, file);
         return new RedirectView("/recipes");
     }
 }
