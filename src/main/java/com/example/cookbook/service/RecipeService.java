@@ -25,7 +25,7 @@ public class RecipeService {
     public void addRecipe(User author, String title, String text, MultipartFile file) throws IOException {
         Recipe recipe = new Recipe(author, title, text);
 
-        if (file != null) {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
             File uploadDir = new File(uploadPath);
 
             if (!uploadDir.exists()) {
