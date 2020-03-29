@@ -1,4 +1,5 @@
 package com.example.cookbook.domain;
+
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     private String title;
 
     @Lob
@@ -17,11 +18,18 @@ public class Recipe {
     @CreatedDate
     private LocalDateTime time;
 
-    public Recipe(){
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User author;
+
+    private String filename;
+
+    public Recipe() {
 
     }
 
-    public Recipe(String title, String text){
+    public Recipe(User user, String title, String text) {
+        this.author = user;
         this.title = title;
         this.text = text;
 
@@ -30,11 +38,11 @@ public class Recipe {
         //this.time = LocalDateTime.parse(LocalDateTime.now().toString(), pattern).format(pattern);
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -54,11 +62,27 @@ public class Recipe {
         this.text = text;
     }
 
-    public LocalDateTime  getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

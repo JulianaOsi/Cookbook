@@ -39,8 +39,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="/recipe/add">Add new recipe</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
+                <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#">Something else here</a>
             </div>
           </li>
@@ -48,6 +47,12 @@
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
           </li>
         </ul>
+          <div>
+              <form action="/logout" method="post">
+
+                  <input type="submit" value="Sign Out"/>
+              </form>
+          </div>
         <form class="form-inline my-2 my-lg-0">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -61,13 +66,19 @@
         {{#recipes}}
         <div class="card border mb-3 ">
           <div class="row no-gutters">
-            <div class="col-md-4">
-              <img src="https://via.placeholder.com/200x200?text=Pizza+margarita" class="card-img rounded-0" alt="...">
+            <div # class="col-md-4">
+                 {{#filename}}
+                    <img src="/img/{{filename}}" class="card-img rounded-0" alt="...">
+                 {{/filename}}
+                {{^filename}}
+                    <img src="https://via.placeholder.com/200x200?text=Pizza+margarita" class="card-img rounded-0" alt="...">
+                {{/filename}}
             </div>
-            <div class="col-md-8">
+            <div # class="col-md-8">
               <div class="card-header rounded-0">{{title}}</div>
               <div class="card-body rounded-0">
                 <h5 class="card-title">Recipe</h5>
+                <p class="card-text">Author: {{author.username}}</p>
                 <p class="card-text">{{text}}</p>
                 <p class="card-text">Time {{time}}</p>
               </div>
