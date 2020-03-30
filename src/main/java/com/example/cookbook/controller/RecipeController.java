@@ -1,17 +1,20 @@
 package com.example.cookbook.controller;
 
+import com.example.cookbook.domain.Recipe;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Map;
 
@@ -44,5 +47,12 @@ public class RecipeController {
             @RequestParam("file") MultipartFile file) throws IOException {
         recipeService.addRecipe(user, title, text, file);
         return new RedirectView("/recipes");
+    }
+
+    @GetMapping("recipe/page/{id}")
+    public ModelAndView getRecipePage(@PathVariable("id") long id, Map<String, Object> model) {
+        Recipe recipe = recipeService.getRecipe(id);
+        model.put("recipe", recipe);
+        return new ModelAndView("recipe/page");
     }
 }

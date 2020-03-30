@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -64,5 +65,9 @@ public class RecipeService {
         Iterable<Recipe> recipes = recipesRepo.findAll();
         Collections.reverse((List<?>) recipes);
         return recipes;
+    }
+
+    public Recipe getRecipe(long id) {
+        return recipesRepo.getOne(id);
     }
 }
