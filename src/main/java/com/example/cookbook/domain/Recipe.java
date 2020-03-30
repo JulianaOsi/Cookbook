@@ -12,7 +12,7 @@ public class Recipe {
     private Long id;
     private String title;
 
-    @Lob
+    //@Lob
     private String text;
 
     @CreatedDate
