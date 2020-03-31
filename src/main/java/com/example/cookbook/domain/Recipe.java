@@ -4,6 +4,8 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Recipe {
@@ -18,16 +20,16 @@ public class Recipe {
     @CreatedDate
     private LocalDateTime time;
 
+    private String filename;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
 
-    private String filename;
+    @OneToMany(mappedBy = "recipe",fetch = FetchType.EAGER)
+    private List<Ingredient> ingredients;
 
-    public Recipe() {
-
-    }
-
+    public Recipe(){}
     public Recipe(User user, String title, String text) {
         this.author = user;
         this.title = title;
@@ -84,5 +86,13 @@ public class Recipe {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }

@@ -1,8 +1,11 @@
 package com.example.cookbook.service;
 
+import com.example.cookbook.domain.Ingredient;
 import com.example.cookbook.domain.Recipe;
 import com.example.cookbook.domain.User;
+import com.example.cookbook.repo.IngredientRepo;
 import com.example.cookbook.repo.RecipesRepo;
+import com.example.cookbook.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +30,9 @@ public class RecipeService {
 
     @Value("${upload.path}")
     private String uploadPath;
+
+    @Autowired
+    private IngredientRepo ingredientRepo;
 
     public void addRecipe(User author, String title, String text, MultipartFile file) throws IOException {
         Recipe recipe = new Recipe(author, title, text);
@@ -55,10 +62,13 @@ public class RecipeService {
             catch (java.lang.NullPointerException ignored) {
 
             }
-
         }
 
+        Ingredient ingredient1 = new Ingredient(recipe, Ingredient.IngredientType.CARROT, 5);
+        Ingredient ingredient2 = new Ingredient(recipe, Ingredient.IngredientType.POTATO, 3);
         recipesRepo.save(recipe);
+        ingredientRepo.save(ingredient1);
+        ingredientRepo.save(ingredient2);
     }
 
     public Iterable<Recipe> getRecipes() {
@@ -69,5 +79,18 @@ public class RecipeService {
 
     public Recipe getRecipe(long id) {
         return recipesRepo.getOne(id);
+    }
+
+    public boolean canDeleteRecipe(long userId, long recipeId) {
+        return recipesRepo
+                .getOne(recipeId)
+                .getAuthor()
+                .getId() == userId;
+    }
+
+    public void deleteRecipe (long userId, long recipeId) {
+        if (canDeleteRecipe(userId, recipeId)) {
+            recipesRepo.deleteById(recipeId);
+        }
     }
 }
