@@ -11,8 +11,46 @@
     <title>Add</title>
 
     <style type="text/css">
-
     </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#addIngredientGroupButton").click(function() {
+                var selection = $(this).prev().children().first().children().first();
+
+                var newSelectId = inputGroupSelect + ($("select").length + 1);
+
+                var inputGroup = selection.parent().parent().last().clone();
+                var newSelection = inputGroup.children().first().children().first();
+                var newInput = inputGroup.children().first().children().last();
+
+                newSelection.attr("id", newSelectId);
+
+                selection.parent().parent().last().after(inputGroup);
+            });
+        });
+        function removeIngredient(button) {
+            alert("removing");
+            var list = document.getElementsByTagName("select");
+            if (list.length > 1){
+                button.parentElement.remove();
+            }
+        };
+
+        function processDigits(input){
+            let value = input.value;
+            let numbers = value.replace(/[^0-9]/g, "");
+            input.value = numbers;
+        }
+
+        function processLetters(input){
+            let value = input.value;
+            let letters = value.replace(/[0-9]/g, "");
+            input.value = letters;
+        }
+    </script>
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -46,26 +84,45 @@
     <form method="post" style="width: 740px;" enctype="multipart/form-data">
         <div class="form-group">
             <label for="exampleFormControlInput1">Name of recipe</label>
-            <input type="text" class="form-control" name="title" id="exampleFormControlInput1" placeholder="Type text">
+            <div class="input-group mb-3 px-2">
+                <input type="text" class="form-control" name="title" id="exampleFormControlInput1" placeholder="Type text" required>
+            </div>
         </div>
         <div class="form-group">
             <label for="inputGroupFile02">Picture</label>
-            <div class="input-group mb-3">
+            <div class="input-group mb-3 px-2">
                 <div class="custom-file">
                     <input type="file" name="file" class="custom-file-input" id="inputGroupFile02" accept=".jpg, .jpeg, .png">
                     <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
                 </div>
-                <div class="input-group-append">
-                    <span class="input-group-text" id="inputGroupFileAddon02">Upload</span>
-                </div>
             </div>
         </div>
         <div class="form-group">
-            <label for="exampleFormControlTextarea1">Recipe text</label>
-            <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3"></textarea>
+            <label for="inputGroupSelect02">Ingredients</label>
+            <div class="input-group mb-3 px-2">
+                <div class="col-xs-4">
+                    <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]" aria-expanded="false" required>
+                        <option value="">Choose ingredient...</option>
+                        {{#ingredients}}
+                        <option value="{{name}}">{{name}}</option>
+                        {{/ingredients}}
+                    </select>
+                    <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]" placeholder="Count" required>
+                </div>
+                <button type="button" class="close px-2" onclick="removeIngredient(this)" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="btn-save btn btn-primary btn-sm d-flex mx-auto justify-content-center" style="width: 70px;" id="addIngredientGroupButton">Add</div>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-sm btn-block">Publish</button>
+            <label for="exampleFormControlTextarea1">Recipe text</label>
+            <div class="input-group mb-3 px-2">
+                <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3" required></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success btn-sm btn-block">Publish</button>
         </div>
     </form>
 
@@ -74,20 +131,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- Optional JavaScript -->
+<!--<script src="add_ingredients.js"></script>-->
+
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
