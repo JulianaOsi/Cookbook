@@ -72,7 +72,11 @@
                 <div class="col-md-8">
                     <div class="d-flex justify-content-between">
                         <div class="card-header border-0 bg-transparent">{{recipe.title}}</div>
-                        <button type="submit" class="btn btn-danger rounded-0">Delete</button>
+                        {{#canDelete}}
+                       <form action="/recipe/page/{{id}}/delete" method="post">
+                            <input type="submit" class="btn btn-danger rounded-0" value="Delete">
+                        </form>
+                        {{/canDelete}}
                     </div>
 
                     <div class="card-body rounded-0">
@@ -80,8 +84,8 @@
                         <p class="card-text px-2">{{recipe.text}}</p>
                         <h5 class="card-title">Ingredients</h5>
                         <div class="d-flex align-content-start flex-wrap px-2">
-<!--                            {{#ingredients}}-->
-<!--                                <div class="px-1 text-info">{{ingredName}}</div>-->
+                            {{#ingredients}}
+                              <div class="px-1 text-info">{{type.name}} {{amount}}</div>
 <!--                                <div class="px-1 text-info">Flex item 2</div>-->
 <!--                                <div class="px-1 text-info">Flex item 3</div>-->
 <!--                                <div class="px-1 text-info">Flex item 4</div>-->
@@ -89,7 +93,7 @@
 <!--                                <div class="px-1 text-info">Flex item 6</div>-->
 <!--                                <div class="px-1 text-info">Flex item 7</div>-->
 <!--                                <div class="px-1 text-info">Flex item 8</div>-->
-<!--                            {{/ingredients}}-->
+                            {{/ingredients}}
                         </div>
                     </div>
                     <span class="right card-footer border-0 bg-transparent">{{recipe.time}}</span><span class="left card-footer border-0 bg-transparent">{{recipe.author.username}}</span>

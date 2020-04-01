@@ -24,7 +24,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<Recipe> recipes;
 
     public Long getId() {
