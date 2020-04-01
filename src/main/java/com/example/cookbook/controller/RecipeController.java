@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +37,9 @@ public class RecipeController {
     }
 
     @GetMapping("recipe/add")
-    public ModelAndView addRecipeWindow() {
-        return new ModelAndView("recipe/add");
+    public ModelAndView addRecipeWindow(Map<String, Object> model) {
+        model.put("ingredients", recipeService.getIngredientTypeNames());
+        return new ModelAndView("recipe/add", model);
     }
 
     @PostMapping("recipe/add")
@@ -45,9 +47,10 @@ public class RecipeController {
             @AuthenticationPrincipal User user,
             @RequestParam String title,
             @RequestParam String text,
+            @RequestParam(value = "select[]") String[] ingredientNames,
+            @RequestParam(value = "counter[]") String[] ingredientAmounts,
             @RequestParam("file") MultipartFile file) throws IOException {
-
-        recipeService.addRecipe(user, title, text, file);
+        recipeService.addRecipe(user, title, text, file, ingredientNames, ingredientAmounts);
         return new RedirectView("/recipes");
     }
 
