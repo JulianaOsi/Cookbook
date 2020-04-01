@@ -19,7 +19,7 @@
             $("#addIngredientGroupButton").click(function() {
                 var selection = $(this).prev().children().first().children().first();
 
-                var newSelectId = inputGroupSelect + ($("select").length + 1);
+                var newSelectId = "inputGroupSelect" + ($("select").length + 1);
 
                 var inputGroup = selection.parent().parent().last().clone();
                 var newSelection = inputGroup.children().first().children().first();
