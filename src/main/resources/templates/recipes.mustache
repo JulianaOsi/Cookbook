@@ -8,10 +8,25 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <title>Add</title>
+    <title>Recipes</title>
 
     <style type="text/css">
+      .truncated-recipe {
+        height: 70px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: height .5s;
+      }
 
+      .left
+      {
+        float: left;
+      }
+
+      .right
+      {
+        float: right;
+      }
     </style>
 </head>
 <body>
@@ -24,10 +39,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/recipes">Recipes <span class="sr-only">(current)</span></a>
+                <a class="nav-link text-secondary" href="/recipes">Recipes <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link text-secondary" href="/recipes/add">Add recipe <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/recipe/add">Add recipe <span class="sr-only">(current)</span></a>
             </li>
         </ul>
         <div>
@@ -43,31 +58,32 @@
 </nav>
 
 <div class="d-flex p-2 justify-content-center">
-    <form method="post" style="width: 740px;" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Name of recipe</label>
-            <input type="text" class="form-control" name="title" id="exampleFormControlInput1" placeholder="Type text">
-        </div>
-        <div class="form-group">
-            <label for="inputGroupFile02">Picture</label>
-            <div class="input-group mb-3">
-                <div class="custom-file">
-                    <input type="file" name="file" class="custom-file-input" id="inputGroupFile02" accept=".jpg, .jpeg, .png">
-                    <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
-                </div>
-                <div class="input-group-append">
-                    <span class="input-group-text" id="inputGroupFileAddon02">Upload</span>
-                </div>
+
+    <div class="row-cols-1" style="width: 740px;">
+        {{#recipes}}
+            <div class="card border mb-3 ">
+                <a href="recipe/page/{{id}}" class="text-decoration-none text-reset row no-gutters">
+                    <div class="col-md-4">
+                        {{#filename}}
+                            <img src="/img/{{filename}}" class="card-img rounded-0" alt="...">
+                        {{/filename}}
+                        {{^filename}}
+                            <img src="https://via.placeholder.com/200x200?text=Pizza+margarita" class="card-img rounded-0" alt="...">
+                        {{/filename}}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-header rounded-0">{{title}}</div>
+                        <div class="card-body rounded-0">
+                            <h5 class="card-title text-primary">Recipe</h5>
+                            <p class="card-text truncated-recipe px-2">{{text}}</p>
+                        </div>
+                        <span class="right card-footer border-0 bg-transparent text-secondary">{{time}}</span>
+                        <span class="left card-footer border-0 bg-transparent text-secondary">{{author.username}}</span>
+                    </div>
+                </a>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="exampleFormControlTextarea1">Recipe text</label>
-            <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3"></textarea>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-sm btn-block">Publish</button>
-        </div>
-    </form>
+        {{/recipes}}
+    </div>
 
 </div>
 

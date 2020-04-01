@@ -1,27 +1,37 @@
 package com.example.cookbook.domain;
+
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     private String title;
 
-    @Lob
+    //@Lob
     private String text;
 
     @CreatedDate
     private LocalDateTime time;
 
-    public Recipe(){
+    private String filename;
 
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User author;
 
-    public Recipe(String title, String text){
+    @OneToMany(mappedBy = "recipe",fetch = FetchType.EAGER)
+    private List<Ingredient> ingredients;
+
+    public Recipe(){}
+    public Recipe(User user, String title, String text) {
+        this.author = user;
         this.title = title;
         this.text = text;
 
@@ -30,11 +40,11 @@ public class Recipe {
         //this.time = LocalDateTime.parse(LocalDateTime.now().toString(), pattern).format(pattern);
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -54,11 +64,35 @@ public class Recipe {
         this.text = text;
     }
 
-    public LocalDateTime  getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }
