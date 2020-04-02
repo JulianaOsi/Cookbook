@@ -58,7 +58,6 @@
 </nav>
 
 <div class="d-flex p-2 justify-content-center">
-
     <div class="row-cols-1" style="width: 740px;">
         {{#recipes}}
             <div class="card border mb-3 ">
@@ -72,10 +71,18 @@
                         {{/filename}}
                     </div>
                     <div class="col-md-8">
-                        <div class="card-header rounded-0">{{title}}</div>
+                        <h5 class="card-header rounded-0">{{title}}</h5>
                         <div class="card-body rounded-0">
-                            <h5 class="card-title text-primary">Recipe</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Recipe</h6>
                             <p class="card-text truncated-recipe px-2">{{text}}</p>
+
+<!--                            <h5 class="card-title text-primary">Ingredients:</h5>-->
+                            <div class="d-flex align-content-start flex-wrap px-2 text-muted">
+                                Ingredients:
+                                {{#ingredients}}
+                                <div class="px-1 text-info">{{type.name}}</div>
+                                {{/ingredients}}
+                            </div>
                         </div>
                         <span class="right card-footer border-0 bg-transparent text-secondary">{{time}}</span>
                         <span class="left card-footer border-0 bg-transparent text-secondary">{{author.username}}</span>
@@ -84,14 +91,7 @@
             </div>
         {{/recipes}}
     </div>
-
 </div>
-
-
-
-
-
-
 
 
 
