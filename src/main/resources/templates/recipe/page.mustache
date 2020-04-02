@@ -80,21 +80,16 @@
                     </div>
 
                     <div class="card-body rounded-0">
-                        <h5 class="card-title">Recipe</h5>
-                        <p class="card-text px-2">{{recipe.text}}</p>
                         <h5 class="card-title">Ingredients</h5>
                         <div class="d-flex align-content-start flex-wrap px-2">
+                            <ul>
                             {{#ingredients}}
-                              <div class="px-1 text-info">{{type.name}} {{amount}}</div>
-<!--                                <div class="px-1 text-info">Flex item 2</div>-->
-<!--                                <div class="px-1 text-info">Flex item 3</div>-->
-<!--                                <div class="px-1 text-info">Flex item 4</div>-->
-<!--                                <div class="px-1 text-info">Flex item 5</div>-->
-<!--                                <div class="px-1 text-info">Flex item 6</div>-->
-<!--                                <div class="px-1 text-info">Flex item 7</div>-->
-<!--                                <div class="px-1 text-info">Flex item 8</div>-->
+                                <div class="px-1 text-info"><li>{{type.name}} {{amount}}</li></div>
                             {{/ingredients}}
+                            </ul>
                         </div>
+                        <h5 class="card-title">Recipe</h5>
+                        <p class="card-text px-2">{{recipe.text}}</p>
                     </div>
                     <span class="right card-footer border-0 bg-transparent">{{recipe.time}}</span><span class="left card-footer border-0 bg-transparent">{{recipe.author.username}}</span>
                 </div>

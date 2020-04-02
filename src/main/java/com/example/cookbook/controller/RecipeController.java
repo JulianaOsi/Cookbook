@@ -38,7 +38,7 @@ public class RecipeController {
 
     @GetMapping("recipe/add")
     public ModelAndView addRecipeWindow(Map<String, Object> model) {
-        model.put("ingredients", recipeService.getIngredientTypeNames());
+        model.put("ingredients", Ingredient.IngredientType.values());
         return new ModelAndView("recipe/add", model);
     }
 
@@ -48,7 +48,7 @@ public class RecipeController {
             @RequestParam String title,
             @RequestParam String text,
             @RequestParam(value = "select[]") String[] ingredientNames,
-            @RequestParam(value = "counter[]") String[] ingredientAmounts,
+            @RequestParam(value = "counter[]") int[] ingredientAmounts,
             @RequestParam("file") MultipartFile file) throws IOException {
         recipeService.addRecipe(user, title, text, file, ingredientNames, ingredientAmounts);
         return new RedirectView("/recipes");

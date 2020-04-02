@@ -31,7 +31,12 @@ public class RecipeService {
     @Autowired
     private IngredientRepo ingredientRepo;
 
-    public void addRecipe(User author, String title, String text, MultipartFile file, String[] ingredientNames, String[] ingredientAmounts) throws IOException {
+    public void addRecipe(User author,
+                          String title,
+                          String text,
+                          MultipartFile file,
+                          String[] ingredientNames,
+                          int[] ingredientAmounts) throws IOException {
         Recipe recipe = new Recipe(author, title, text);
 
         if (file != null && !file.getOriginalFilename().isEmpty()) {
@@ -67,12 +72,15 @@ public class RecipeService {
                 }
 
             catch (java.lang.NullPointerException ignored) {
-
             }
         }
         recipesRepo.save(recipe);
-        for (int i = 0; i < ingredientNames.length; i++  ){
-            ingredientRepo.save(new Ingredient(recipe, Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()), Integer.parseInt(ingredientAmounts[i])));
+
+        for (int i = 0; i < ingredientNames.length; i++ ){
+            ingredientRepo.save(new Ingredient(
+                            recipe,
+                            Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()),
+                            ingredientAmounts[i]));
         }
     }
 
@@ -80,10 +88,6 @@ public class RecipeService {
         Iterable<Recipe> recipes = recipesRepo.findAll();
         Collections.reverse((List<?>) recipes);
         return recipes;
-    }
-
-    public Iterable<Ingredient.IngredientType> getIngredientTypeNames() {
-        return Arrays.asList(Ingredient.IngredientType.values());
     }
 
     public Recipe getRecipe(long id) {
