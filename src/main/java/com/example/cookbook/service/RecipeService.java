@@ -18,10 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RecipeService {
@@ -34,7 +31,12 @@ public class RecipeService {
     @Autowired
     private IngredientRepo ingredientRepo;
 
-    public void addRecipe(User author, String title, String text, MultipartFile file) throws IOException {
+    public void addRecipe(User author,
+                          String title,
+                          String text,
+                          MultipartFile file,
+                          String[] ingredientNames,
+                          int[] ingredientAmounts) throws IOException {
         Recipe recipe = new Recipe(author, title, text);
 
         if (file != null && !file.getOriginalFilename().isEmpty()) {
@@ -54,21 +56,32 @@ public class RecipeService {
                     ImageIO.write(croppedImage, "jpg", new File(uploadPath + "/" + fileName));
                 }
                 else {
-                    ImageIO.write(image,"jpg", new File(uploadPath + "/" + fileName));
+                    if (image.getWidth() < image.getHeight()){
+                        BufferedImage croppedImage = image.getSubimage(0, Math.round((image.getHeight() - image.getWidth())/2), image.getWidth(), image.getWidth());
+                        ImageIO.write(croppedImage, "jpg", new File(uploadPath + "/" + fileName));
+                    }
+                    else if (image.getWidth() > image.getHeight()){
+                        BufferedImage croppedImage = image.getSubimage(Math.round((image.getWidth() - image.getHeight())/2), 0, image.getHeight(), image.getHeight());
+                        ImageIO.write(croppedImage, "jpg", new File(uploadPath + "/" + fileName));
+                    }
+                    else {
+                        ImageIO.write(image,"jpg", new File(uploadPath + "/" + fileName));
+                    }
                 }
                 recipe.setFilename(fileName);
-            }
+                }
 
             catch (java.lang.NullPointerException ignored) {
-
             }
         }
-
-        Ingredient ingredient1 = new Ingredient(recipe, Ingredient.IngredientType.CARROT, 5);
-        Ingredient ingredient2 = new Ingredient(recipe, Ingredient.IngredientType.POTATO, 3);
         recipesRepo.save(recipe);
-        ingredientRepo.save(ingredient1);
-        ingredientRepo.save(ingredient2);
+
+        for (int i = 0; i < ingredientNames.length; i++ ){
+            ingredientRepo.save(new Ingredient(
+                            recipe,
+                            Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()),
+                            ingredientAmounts[i]));
+        }
     }
 
     public Iterable<Recipe> getRecipes() {
