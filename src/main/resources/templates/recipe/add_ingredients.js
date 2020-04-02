@@ -9,12 +9,11 @@ $(document).ready(function(){
         var newInput = inputGroup.children().first().children().last();
 
         newSelection.attr("id", newSelectId);
-
+        newInput.val("");
         selection.parent().parent().last().after(inputGroup);
     });
 });
 function removeIngredient(button) {
-    alert("removing");
     var list = document.getElementsByTagName("select");
     if (list.length > 1){
         button.parentElement.remove();
