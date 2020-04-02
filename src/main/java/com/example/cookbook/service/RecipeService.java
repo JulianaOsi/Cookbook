@@ -5,14 +5,12 @@ import com.example.cookbook.domain.Recipe;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.repo.IngredientRepo;
 import com.example.cookbook.repo.RecipesRepo;
-import com.example.cookbook.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -31,7 +29,12 @@ public class RecipeService {
     @Autowired
     private IngredientRepo ingredientRepo;
 
-    public void addRecipe(User author, String title, String text, MultipartFile file, String[] ingredientNames, String[] ingredientAmounts) throws IOException {
+    public void addRecipe(User author,
+                          String title,
+                          String text,
+                          MultipartFile file,
+                          String[] ingredientNames,
+                          int[] ingredientAmounts) throws IOException {
         Recipe recipe = new Recipe(author, title, text);
 
         if (file != null && !file.getOriginalFilename().isEmpty()) {
@@ -67,12 +70,15 @@ public class RecipeService {
                 }
 
             catch (java.lang.NullPointerException ignored) {
-
             }
         }
         recipesRepo.save(recipe);
-        for (int i = 0; i < ingredientNames.length; i++  ){
-            ingredientRepo.save(new Ingredient(recipe, Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()), Integer.parseInt(ingredientAmounts[i])));
+
+        for (int i = 0; i < ingredientNames.length; i++ ){
+            ingredientRepo.save(new Ingredient(
+                            recipe,
+                            Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()),
+                            ingredientAmounts[i]));
         }
     }
 
@@ -80,10 +86,6 @@ public class RecipeService {
         Iterable<Recipe> recipes = recipesRepo.findAll();
         Collections.reverse((List<?>) recipes);
         return recipes;
-    }
-
-    public Iterable<Ingredient.IngredientType> getIngredientTypeNames() {
-        return Arrays.asList(Ingredient.IngredientType.values());
     }
 
     public Recipe getRecipe(long id) {

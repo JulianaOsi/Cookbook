@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="d-flex justify-content-between">
-                        <div class="card-header border-0 bg-transparent">{{recipe.title}}</div>
+                        <h5 class="card-header border-0 bg-transparent">{{recipe.title}}</h5>
                         {{#canDelete}}
                        <form action="/recipe/page/{{id}}/delete" method="post">
                             <input type="submit" class="btn btn-danger rounded-0" value="Delete">
@@ -80,23 +80,18 @@
                     </div>
 
                     <div class="card-body rounded-0">
-                        <h5 class="card-title">Recipe</h5>
-                        <p class="card-text px-2">{{recipe.text}}</p>
-                        <h5 class="card-title">Ingredients</h5>
-                        <div class="d-flex align-content-start flex-wrap px-2">
-                            {{#ingredients}}
-                              <div class="px-1 text-info">{{type.name}} {{amount}}</div>
-<!--                                <div class="px-1 text-info">Flex item 2</div>-->
-<!--                                <div class="px-1 text-info">Flex item 3</div>-->
-<!--                                <div class="px-1 text-info">Flex item 4</div>-->
-<!--                                <div class="px-1 text-info">Flex item 5</div>-->
-<!--                                <div class="px-1 text-info">Flex item 6</div>-->
-<!--                                <div class="px-1 text-info">Flex item 7</div>-->
-<!--                                <div class="px-1 text-info">Flex item 8</div>-->
-                            {{/ingredients}}
+                        <h6 class="card-subtitle mb-2 text-muted">Ingredients</h6>
+                        <div class="d-flex align-content-start flex-wrap">
+                            <ul class="px-2" style="list-style-type: none;">
+                                {{#ingredients}}
+                                    <div class="px-1 text-info"><li>{{type.name}} {{amount}}</li></div>
+                                {{/ingredients}}
+                            </ul>
                         </div>
+                        <h6 class="card-subtitle mb-2 text-muted">Recipe</h6>
+                        <p class="card-text px-2">{{recipe.text}}</p>
                     </div>
-                    <span class="right card-footer border-0 bg-transparent">{{recipe.time}}</span><span class="left card-footer border-0 bg-transparent">{{recipe.author.username}}</span>
+                    <span class="right card-footer border-0 bg-transparent text-muted">{{recipe.time}}</span><span class="left card-footer border-0 bg-transparent text-muted">{{recipe.author.username}}</span>
                 </div>
             </div>
         </div>

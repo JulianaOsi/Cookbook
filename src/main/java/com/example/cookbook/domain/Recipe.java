@@ -4,7 +4,6 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,7 +13,6 @@ public class Recipe {
     private Long id;
     private String title;
 
-    //@Lob
     private String text;
 
     @CreatedDate
@@ -26,7 +24,7 @@ public class Recipe {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(mappedBy = "recipe",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "recipe",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Ingredient> ingredients;
 
     public Recipe(){}
@@ -36,8 +34,6 @@ public class Recipe {
         this.text = text;
 
         this.time = LocalDateTime.now();
-        //DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        //this.time = LocalDateTime.parse(LocalDateTime.now().toString(), pattern).format(pattern);
     }
 
     public Long getId() {
