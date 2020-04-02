@@ -5,8 +5,6 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static javax.persistence.TemporalType.TIMESTAMP;
@@ -18,7 +16,6 @@ public class Recipe {
     private Long id;
     private String title;
 
-    //@Lob
     private String text;
 
     @CreatedDate

@@ -5,14 +5,12 @@ import com.example.cookbook.domain.Recipe;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.repo.IngredientRepo;
 import com.example.cookbook.repo.RecipesRepo;
-import com.example.cookbook.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
