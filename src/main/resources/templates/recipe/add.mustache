@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Add</title>
 
@@ -48,13 +49,15 @@ function processLetters(input){
     let letters = value.replace(/[0-9]/g, "");
     input.value = letters;
 }
+
     </script>
 
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/recipes">Cookbook</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -84,15 +87,18 @@ function processLetters(input){
         <div class="form-group">
             <label for="exampleFormControlInput1">Name of recipe</label>
             <div class="input-group mb-3 px-2">
-                <input type="text" class="form-control" name="title" id="exampleFormControlInput1" placeholder="Type text" required>
+                <input type="text" class="form-control" name="title" id="exampleFormControlInput1"
+                       placeholder="Type text" required>
             </div>
         </div>
         <div class="form-group">
             <label for="inputGroupFile02">Picture</label>
             <div class="input-group mb-3 px-2">
                 <div class="custom-file">
-                    <input type="file" name="file" class="custom-file-input" id="inputGroupFile02" accept=".jpg, .jpeg, .png">
-                    <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                    <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
+                           accept=".jpg, .jpeg, .png">
+                    <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose
+                        file</label>
                 </div>
             </div>
         </div>
@@ -100,24 +106,29 @@ function processLetters(input){
             <label for="inputGroupSelect02">Ingredients</label>
             <div class="input-group mb-3 px-2">
                 <div class="col-xs-4 d-flex">
-                    <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]" aria-expanded="false" required>
+                    <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]"
+                            aria-expanded="false" required>
                         <option value="">Choose ingredient...</option>
                         {{#ingredients}}
                             <option value="{{name}}">{{name}}</option>
                         {{/ingredients}}
                     </select>
-                    <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]" placeholder="Count" required>
+                    <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]"
+                           placeholder="Count" required>
                 </div>
                 <button type="button" class="close px-2" onclick="removeIngredient(this)" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="btn-save btn btn-primary btn-sm d-flex mx-auto justify-content-center" style="width: 70px;" id="addIngredientGroupButton">Add</div>
+            <div class="btn-save btn btn-primary btn-sm d-flex mx-auto justify-content-center" style="width: 70px;"
+                 id="addIngredientGroupButton">Add
+            </div>
         </div>
         <div class="form-group">
             <label for="exampleFormControlTextarea1">Recipe text</label>
             <div class="input-group mb-3 px-2">
-                <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3" required></textarea>
+                <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3"
+                          required></textarea>
             </div>
         </div>
         <div class="form-group">
@@ -132,8 +143,14 @@ function processLetters(input){
 <!--<script src="add_ingredients.js"></script>-->
 
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
 </body>
 </html>

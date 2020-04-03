@@ -1,9 +1,8 @@
 package com.example.cookbook.domain;
 
-import org.springframework.data.annotation.CreatedDate;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -15,8 +14,8 @@ public class Recipe {
 
     private String text;
 
-    @CreatedDate
-    private LocalDateTime time;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate time;
 
     private String filename;
 
@@ -24,16 +23,17 @@ public class Recipe {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(mappedBy = "recipe",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Ingredient> ingredients;
 
-    public Recipe(){}
+    public Recipe() {
+    }
+
     public Recipe(User user, String title, String text) {
         this.author = user;
         this.title = title;
         this.text = text;
-
-        this.time = LocalDateTime.now();
+        this.time = LocalDate.now();
     }
 
     public Long getId() {
@@ -60,11 +60,11 @@ public class Recipe {
         this.text = text;
     }
 
-    public LocalDateTime getTime() {
+    public LocalDate getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(LocalDate time) {
         this.time = time;
     }
 

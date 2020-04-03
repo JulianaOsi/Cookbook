@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Recipe</title>
 
@@ -25,6 +26,7 @@
         float: right;
       }
 
+
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="jq_functions.js"></script>
@@ -32,7 +34,8 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/recipes">Cookbook</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -66,14 +69,15 @@
                         <img src="/img/{{recipe.filename}}" class="card-img rounded-0" alt="...">
                     {{/recipe.filename}}
                     {{^recipe.filename}}
-                        <img src="https://via.placeholder.com/200x200?text=Pizza+margarita" class="card-img rounded-0" alt="...">
+                        <img src="https://via.placeholder.com/200x200?text=Pizza+margarita" class="card-img rounded-0"
+                             alt="...">
                     {{/recipe.filename}}
                 </div>
                 <div class="col-md-8">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-header border-0 bg-transparent">{{recipe.title}}</h5>
                         {{#canDelete}}
-                            <form action="/recipe/page/{{id}}/delete" method="post">
+                            <form action="/recipe/page/{{id}}/delete" method= "post">
                                 <input type="submit" class="btn btn-danger rounded-0" value="Delete">
                             </form>
                         {{/canDelete}}
@@ -84,14 +88,17 @@
                         <div class="d-flex align-content-start flex-wrap">
                             <ul class="px-2" style="list-style-type: none;">
                                 {{#ingredients}}
-                                    <div class="px-1 text-info"><li>{{type.name}} {{amount}}</li></div>
+                                    <div class="px-1 text-info">
+                                        <li>{{type.name}} {{amount}}</li>
+                                    </div>
                                 {{/ingredients}}
                             </ul>
                         </div>
                         <h6 class="card-subtitle mb-2 text-muted">Recipe</h6>
                         <p class="card-text px-2">{{recipe.text}}</p>
                     </div>
-                    <span class="right card-footer border-0 bg-transparent text-muted">{{recipe.time}}</span><span class="left card-footer border-0 bg-transparent text-muted">{{recipe.author.username}}</span>
+                    <span class="right card-footer border-0 bg-transparent text-muted">{{recipe.time}}</span><span
+                        class="left card-footer border-0 bg-transparent text-muted">{{recipe.author.username}}</span>
                 </div>
             </div>
         </div>
@@ -101,8 +108,14 @@
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
 </body>
 </html>
