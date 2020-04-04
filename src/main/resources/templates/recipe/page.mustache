@@ -81,6 +81,11 @@
                                 <input type="submit" class="btn btn-danger rounded-0" value="Delete">
                             </form>
                         {{/canDelete}}
+                        {{#canEdit}}
+                            <form action="/recipe/page/{{id}}/update" method= "post">
+                                <input type="submit" class="btn btn-secondary rounded-0" value="Edit">
+                            </form>
+                        {{/canEdit}}
                     </div>
 
                     <div class="card-body rounded-0">
