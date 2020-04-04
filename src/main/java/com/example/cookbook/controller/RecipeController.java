@@ -58,18 +58,40 @@ public class RecipeController {
         Recipe recipe = recipeService.getRecipe(id);
         model.put("recipe", recipe);
 
-        boolean canDelete = user != null && recipeService.canDeleteRecipe(user.getId(), id);
-        model.put("canDelete", canDelete);
+        boolean isAccess = user != null && recipeService.isAccess(user.getId(), id);
+        model.put("isAccess", isAccess);
         model.put("ingredients", recipe.getIngredients());
 
         return new ModelAndView("recipe/page");
     }
 
     @PostMapping("recipe/page/{id}/delete")
-    public RedirectView delete(
+    public RedirectView deleteRecipe(
             @AuthenticationPrincipal User user,
-            @PathVariable("id") long id) {
-        recipeService.deleteRecipe(user.getId(), id);
+            @PathVariable("id") long recipeId) {
+        recipeService.deleteRecipe(user.getId(), recipeId);
         return new RedirectView("/recipes");
+    }
+
+    @GetMapping("recipe/page/update/{id}")
+    public ModelAndView updateRecipeWindow(
+            @PathVariable("id") long recipeId,
+            Map<String, Object> model) {
+        model.put("recipe", recipeService.getRecipe(recipeId));
+        model.put("ingredient_types", Ingredient.IngredientType.values());
+        return new ModelAndView("/recipe/update");
+    }
+
+    @PostMapping("recipe/page/update/{id}")
+    public RedirectView updateRecipe(
+            @AuthenticationPrincipal User user,
+            @PathVariable("id") long recipeId,
+            @RequestParam String title,
+            @RequestParam String text,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "select[]") String[] ingredientNames,
+            @RequestParam(value = "counter[]") int[] ingredientAmounts) throws IOException  {
+        recipeService.updateRecipe(user.getId(), recipeId, title, text, file, ingredientNames, ingredientAmounts);
+        return new RedirectView("/recipe/page/{id}");
     }
 }
