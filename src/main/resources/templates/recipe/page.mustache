@@ -48,9 +48,12 @@
                 <a class="nav-link" href="/recipe/add">Add recipe <span class="sr-only">(current)</span></a>
             </li>
         </ul>
-        <div>
+        <div class="d-flex">
             <form action="/logout" method="post">
-                <input type="submit" value="Sign Out"/>
+                <input class="btn btn-outline-primary border-0 my-2 my-sm-0" type="submit" value="Sign In"/>
+            </form>
+            <form action="/logout" method="post">
+                <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Out"/>
             </form>
         </div>
         <form class="form-inline my-2 my-lg-0">
@@ -76,16 +79,18 @@
                 <div class="col-md-8">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-header border-0 bg-transparent">{{recipe.title}}</h5>
-                        {{#isAccess}}
-                            <form action="/recipe/page/{{id}}/delete" method= "post">
-                                <input type="submit" class="btn btn-danger rounded-0" value="Delete">
-                            </form>
-                        {{/isAccess}}
-                        {{#isAccess}}
-                            <form action="/recipe/page/update/{{id}}" method= "get">
-                                <input type="submit" class="btn btn-secondary rounded-0" value="Edit">
-                            </form>
-                        {{/isAccess}}
+                        <div class="d-flex">
+                            {{#isAccess}}
+                                <form action="/recipe/page/update/{{id}}" method="get">
+                                    <input type="submit" class="btn btn-link" value="Edit">
+                                </form>
+                            {{/isAccess}}
+                            {{#isAccess}}
+                                <form action="/recipe/page/{{id}}/delete" method="post">
+                                    <input type="submit" class="btn btn-danger rounded-0" value="Delete">
+                                </form>
+                            {{/isAccess}}
+                        </div>
                     </div>
 
                     <div class="card-body rounded-0">
