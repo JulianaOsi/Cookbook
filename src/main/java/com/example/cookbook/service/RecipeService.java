@@ -6,16 +6,12 @@ import com.example.cookbook.domain.User;
 import com.example.cookbook.repo.IngredientRepo;
 import com.example.cookbook.repo.RecipesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
+
 import java.io.IOException;
-import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -23,11 +19,11 @@ public class RecipeService {
     @Autowired
     private RecipesRepo recipesRepo;
 
-    @Value("${upload.path}")
-    private String uploadPath;
-
     @Autowired
     private IngredientRepo ingredientRepo;
+
+    @Autowired
+    FileService fileService;
 
     public void addRecipe(User author,
                           String title,
@@ -37,48 +33,14 @@ public class RecipeService {
                           int[] ingredientAmounts) throws IOException {
         Recipe recipe = new Recipe(author, title, text);
 
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
-
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-
-            String fileName = UUID.randomUUID().toString() + file.getOriginalFilename();
-            byte [] fileInBytes = file.getBytes();
-            InputStream in = new ByteArrayInputStream(fileInBytes);
-            BufferedImage image = ImageIO.read(in);
-            try {
-                if (image.getWidth() > 400 && image.getHeight() > 400) {
-                    BufferedImage croppedImage = image.getSubimage(Math.round(image.getWidth()/2) - 200, Math.round(image.getHeight()/2) - 200, 400, 400);
-                    ImageIO.write(croppedImage, "jpg", new File(uploadPath + "/" + fileName));
-                }
-                else {
-                    if (image.getWidth() < image.getHeight()){
-                        BufferedImage croppedImage = image.getSubimage(0, Math.round((image.getHeight() - image.getWidth())/2), image.getWidth(), image.getWidth());
-                        ImageIO.write(croppedImage, "jpg", new File(uploadPath + "/" + fileName));
-                    }
-                    else if (image.getWidth() > image.getHeight()){
-                        BufferedImage croppedImage = image.getSubimage(Math.round((image.getWidth() - image.getHeight())/2), 0, image.getHeight(), image.getHeight());
-                        ImageIO.write(croppedImage, "jpg", new File(uploadPath + "/" + fileName));
-                    }
-                    else {
-                        ImageIO.write(image,"jpg", new File(uploadPath + "/" + fileName));
-                    }
-                }
-                recipe.setFilename(fileName);
-                }
-
-            catch (java.lang.NullPointerException ignored) {
-            }
-        }
+        fileService.savePhoto(recipe, file);
         recipesRepo.save(recipe);
 
-        for (int i = 0; i < ingredientNames.length; i++ ){
+        for (int i = 0; i < ingredientNames.length; i++) {
             ingredientRepo.save(new Ingredient(
-                            recipe,
-                            Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()),
-                            ingredientAmounts[i]));
+                    recipe,
+                    Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()),
+                    ingredientAmounts[i]));
         }
     }
 
@@ -92,16 +54,44 @@ public class RecipeService {
         return recipesRepo.getOne(id);
     }
 
-    public boolean canDeleteRecipe(long userId, long recipeId) {
+    public boolean isAccess(long userId, long recipeId) {
         return recipesRepo
                 .getOne(recipeId)
                 .getAuthor()
                 .getId() == userId;
     }
 
-    public void deleteRecipe (long userId, long recipeId) {
-        if (canDeleteRecipe(userId, recipeId)) {
+    public void deleteRecipe(long userId, long recipeId) {
+        if (isAccess(userId, recipeId)) {
             recipesRepo.deleteById(recipeId);
+        }
+    }
+
+    public void updateRecipe(
+            long userId,
+            long recipeId,
+            String title,
+            String text,
+            MultipartFile file,
+            String[] ingredientNames,
+            int[] ingredientAmounts) throws IOException {
+        if (isAccess(userId, recipeId)) {
+
+            Recipe updatingRecipe = recipesRepo.getOne(recipeId);
+            fileService.savePhoto(updatingRecipe, file);
+
+            updatingRecipe.setTitle(title);
+            updatingRecipe.setText(text);
+            updatingRecipe.setTime(LocalDate.now());
+            recipesRepo.save(updatingRecipe);
+
+            ingredientRepo.deleteAll(updatingRecipe.getIngredients());
+            for (int i = 0; i < ingredientNames.length; i++) {
+                ingredientRepo.save(new Ingredient(
+                        updatingRecipe,
+                        Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()),
+                        ingredientAmounts[i]));
+            }
         }
     }
 }

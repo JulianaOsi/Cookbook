@@ -51,6 +51,7 @@ function processLetters(input){
 }
 
 function setElementValue(element, value){
+    alert("value");
     element.value = value;
 }
 
@@ -109,15 +110,15 @@ function setElementValue(element, value){
         </div>
         <div class="form-group">
             <label for="inputGroupSelect02">Ingredients</label>
-            {{#currentIngredients}}
+            {{#recipe.ingredients}}
             <div class="input-group mb-3 px-2">
                 <div class="col-xs-4 d-flex">
                     <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]"
                             aria-expanded="false" required>
                         <option onload="setElementValue(this,{{type.name}})">{{type.name}}</option>
-                        {{#ingredients}}
+                        {{#ingredient_types}}
                             <option value="{{name}}">{{name}}</option>
-                        {{/ingredients}}
+                        {{/ingredient_types}}
                     </select>
                     <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]" placeholder="{{amount}}"
                            onload="setElementValue(this,{{amount}})" required>
@@ -126,7 +127,7 @@ function setElementValue(element, value){
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            {{/currentIngredients}}
+            {{/recipe.ingredients}}
             <div class="btn-save btn btn-primary btn-sm d-flex mx-auto justify-content-center" style="width: 70px;"
                  id="addIngredientGroupButton">Add
             </div>
