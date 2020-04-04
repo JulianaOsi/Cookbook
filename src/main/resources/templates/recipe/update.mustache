@@ -49,12 +49,6 @@ function processLetters(input){
     let letters = value.replace(/[0-9]/g, "");
     input.value = letters;
 }
-
-function setElementValue(element, value){
-    alert("value");
-    element.value = value;
-}
-
     </script>
 
 </head>
@@ -75,9 +69,12 @@ function setElementValue(element, value){
                 <a class="nav-link" href="/recipes/add">Add recipe <span class="sr-only">(current)</span></a>
             </li>
         </ul>
-        <div>
+        <div class="d-flex">
             <form action="/logout" method="post">
-                <input type="submit" value="Sign Out"/>
+                <input class="btn btn-outline-primary border-0 my-2 my-sm-0" type="submit" value="Sign In"/>
+            </form>
+            <form action="/logout" method="post">
+                <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Out"/>
             </form>
         </div>
         <form class="form-inline my-2 my-lg-0">
@@ -93,7 +90,7 @@ function setElementValue(element, value){
             <label for="exampleFormControlInput1">Name of recipe</label>
             <div class="input-group mb-3 px-2">
                 <input type="text" class="form-control" name="title" id="exampleFormControlInput1"
-                       onload="setElementValue(this,{{recipe.title}})"
+                       value="{{recipe.title}}"
                        placeholder="{{recipe.title}}" required>
             </div>
         </div>
@@ -101,10 +98,20 @@ function setElementValue(element, value){
             <label for="inputGroupFile02">Picture</label>
             <div class="input-group mb-3 px-2">
                 <div class="custom-file">
-                    <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
-                           onload="setElementValue(this,{{recipe.filename}})"
-                           accept=".jpg, .jpeg, .png">
-                    <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">{{recipe.filename}}</label>
+                    {{#recipe.filename}}
+                        <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
+                               value="{{recipe.filename}}"
+                               accept=".jpg, .jpeg, .png">
+                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">
+                            {{recipe.filename}}</label>
+                    {{/recipe.filename}}
+                    {{^recipe.filename}}
+                        <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
+                               value="https://via.placeholder.com/200x200?text=Pizza+margarita"
+                               accept=".jpg, .jpeg, .png">
+                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">
+                            https://via.placeholder.com/200x200?text=Pizza+margarita</label>
+                    {{/recipe.filename}}
                 </div>
             </div>
         </div>
@@ -115,13 +122,13 @@ function setElementValue(element, value){
                 <div class="col-xs-4 d-flex">
                     <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]"
                             aria-expanded="false" required>
-                        <option onload="setElementValue(this,{{type.name}})">{{type.name}}</option>
+                        <option value="{{type.name}}">{{type.name}}</option>
                         {{#ingredient_types}}
                             <option value="{{name}}">{{name}}</option>
                         {{/ingredient_types}}
                     </select>
                     <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]" placeholder="{{amount}}"
-                           onload="setElementValue(this,{{amount}})" required>
+                           value="{{amount}}" required>
                 </div>
                 <button type="button" class="close px-2" onclick="removeIngredient(this)" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -135,8 +142,7 @@ function setElementValue(element, value){
         <div class="form-group">
             <label for="exampleFormControlTextarea1">Recipe text</label>
             <div class="input-group mb-3 px-2">
-                <textarea class="form-control" name="text" id="exampleFormControlTextarea1"
-                          onload="setElementValue(this, {{recipe.text}})" rows="3" required></textarea>
+                <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3" required>{{recipe.text}}</textarea>
             </div>
         </div>
         <div class="form-group">
