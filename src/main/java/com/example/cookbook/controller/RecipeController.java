@@ -26,8 +26,10 @@ public class RecipeController {
     }
 
     @GetMapping("recipes")
-    public ModelAndView getRecipes(Map<String, Object> model) {
-        model.put("recipes", recipeService.getRecipes());
+    public ModelAndView getRecipes(
+            @RequestParam(required = false) String search,
+            Map<String, Object> model) {
+        model.put("recipes", recipeService.getRecipes(search));
         return new ModelAndView("recipes", model);
     }
 
@@ -90,7 +92,7 @@ public class RecipeController {
             @RequestParam String text,
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "select[]") String[] ingredientNames,
-            @RequestParam(value = "counter[]") int[] ingredientAmounts) throws IOException  {
+            @RequestParam(value = "counter[]") int[] ingredientAmounts) throws IOException {
         recipeService.updateRecipe(user.getId(), recipeId, title, text, file, ingredientNames, ingredientAmounts);
         return new RedirectView("/recipe/page/{id}");
     }

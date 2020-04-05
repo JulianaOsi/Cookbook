@@ -25,6 +25,9 @@ public class RecipeService {
     @Autowired
     FileService fileService;
 
+    @Autowired
+    HibernateSearchService searchService;
+
     public void addRecipe(User author,
                           String title,
                           String text,
@@ -44,8 +47,10 @@ public class RecipeService {
         }
     }
 
-    public Iterable<Recipe> getRecipes() {
-        Iterable<Recipe> recipes = recipesRepo.findAll();
+    public Iterable<Recipe> getRecipes(String text) {
+        Iterable<Recipe> recipes = text == null
+                ? recipesRepo.findAll()
+                : searchService.search(text);
         Collections.reverse((List<?>) recipes);
         return recipes;
     }
