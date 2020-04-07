@@ -1,6 +1,7 @@
 package com.example.cookbook.controller;
 
 import com.example.cookbook.domain.Ingredient;
+import com.example.cookbook.domain.Reaction;
 import com.example.cookbook.domain.Recipe;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.service.RecipeService;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -63,8 +65,24 @@ public class RecipeController {
         boolean isAccess = user != null && recipeService.isAccess(user.getId(), id);
         model.put("isAccess", isAccess);
         model.put("ingredients", recipe.getIngredients());
+        List<Reaction> reactionList = recipe.getReactions();
+        model.put("reactions", reactionList);
 
         return new ModelAndView("recipe/page");
+    }
+
+    @PostMapping("recipe/page/{id}/reaction/add")
+    public void addReaction(
+            @PathVariable("id") long recipeId,
+            @RequestParam String reaction) {
+        // TODO
+        //recipeService.addReaction(recipeId, reaction);
+    }
+
+    @GetMapping("/reactions")
+    public void getAllReactions() {
+        // TODO
+        //recipeService.getAllReactions();
     }
 
     @PostMapping("recipe/page/{id}/delete")
@@ -75,7 +93,7 @@ public class RecipeController {
         return new RedirectView("/recipes");
     }
 
-    @GetMapping("recipe/page/update/{id}")
+    @GetMapping("recipe/page/{id}/update")
     public ModelAndView updateRecipeWindow(
             @PathVariable("id") long recipeId,
             Map<String, Object> model) {
@@ -84,7 +102,7 @@ public class RecipeController {
         return new ModelAndView("/recipe/update");
     }
 
-    @PostMapping("recipe/page/update/{id}")
+    @PostMapping("recipe/page/{id}/update")
     public RedirectView updateRecipe(
             @AuthenticationPrincipal User user,
             @PathVariable("id") long recipeId,

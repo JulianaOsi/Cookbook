@@ -2,4 +2,4 @@ target/
 .idea/
 demo.iml
 com.example.cookbook.domain.Recipe/
-uploads/
+media/uploads/

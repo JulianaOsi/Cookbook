@@ -69,19 +69,23 @@
             <div class="row no-gutters">
                 <div class="col-md-4">
                     {{#recipe.filename}}
-                        <img src="/img/{{recipe.filename}}" class="card-img rounded-0" alt="...">
+                        <img src="/uploads/{{recipe.filename}}" class="card-img rounded-0" alt="...">
                     {{/recipe.filename}}
                     {{^recipe.filename}}
                         <img src="https://via.placeholder.com/200x200?text=Pizza+margarita" class="card-img rounded-0"
                              alt="...">
                     {{/recipe.filename}}
+
+                    {{#reactions}}
+                        <img src="/reactions/{{type.filename}}" class="card-img rounded-0" alt="...">
+                    {{/reactions}}
                 </div>
                 <div class="col-md-8">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-header border-0 bg-transparent">{{recipe.title}}</h5>
                         <div class="d-flex">
                             {{#isAccess}}
-                                <form action="/recipe/page/update/{{id}}" method="get">
+                                <form action="/recipe/page/{{id}}/update" method="get">
                                     <input type="submit" class="btn btn-link" value="Edit">
                                 </form>
                             {{/isAccess}}

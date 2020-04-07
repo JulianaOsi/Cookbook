@@ -1,9 +1,11 @@
 package com.example.cookbook.service;
 
 import com.example.cookbook.domain.Ingredient;
+import com.example.cookbook.domain.Reaction;
 import com.example.cookbook.domain.Recipe;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.repo.IngredientRepo;
+import com.example.cookbook.repo.ReactionRepo;
 import com.example.cookbook.repo.RecipesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ public class RecipeService {
 
     @Autowired
     private IngredientRepo ingredientRepo;
+
+    @Autowired
+    private ReactionRepo reactionRepo;
 
     @Autowired
     FileService fileService;
@@ -98,5 +103,18 @@ public class RecipeService {
                         ingredientAmounts[i]));
             }
         }
+    }
+
+    public void addReaction(long recipeId, String reaction) {
+        Recipe recipe = recipesRepo.getOne(recipeId);
+        Reaction.ReactionType reactionType = Reaction.ReactionType.valueOf(reaction.toUpperCase());
+
+        for (Reaction r : recipe.getReactions()) {
+            if (r.getType() == reactionType) {
+                r.incrementCount();
+                return;
+            }
+        }
+        reactionRepo.save(new Reaction(recipe, reactionType, 1));
     }
 }
