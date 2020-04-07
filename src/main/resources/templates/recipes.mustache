@@ -57,7 +57,7 @@
             </form>
         </div>
         <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>
@@ -70,7 +70,7 @@
                 <a href="recipe/page/{{id}}" class="text-decoration-none text-reset row no-gutters">
                     <div class="col-md-4">
                         {{#filename}}
-                            <img src="/img/{{filename}}" class="card-img rounded-0" alt="...">
+                            <img src="/uploads/{{filename}}" class="card-img rounded-0" alt="...">
                         {{/filename}}
                         {{^filename}}
                             <img src="https://via.placeholder.com/200x200?text=Pizza+margarita"

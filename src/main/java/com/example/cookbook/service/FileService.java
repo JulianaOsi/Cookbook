@@ -16,12 +16,12 @@ import java.util.UUID;
 @Service
 public class FileService {
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    @Value("${uploads.path}")
+    private String uploadsPath;
 
     public void savePhoto(Recipe recipe, MultipartFile file) throws IOException {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
+            File uploadDir = new File(uploadsPath);
 
             if (!uploadDir.exists()) {
                 uploadDir.mkdir();
@@ -34,16 +34,16 @@ public class FileService {
             try {
                 if (image.getWidth() > 400 && image.getHeight() > 400) {
                     BufferedImage croppedImage = image.getSubimage(Math.round(image.getWidth() / 2) - 200, Math.round(image.getHeight() / 2) - 200, 400, 400);
-                    ImageIO.write(croppedImage, "jpg", new File(uploadPath + "/" + fileName));
+                    ImageIO.write(croppedImage, "jpg", new File(uploadsPath + "/" + fileName));
                 } else {
                     if (image.getWidth() < image.getHeight()) {
                         BufferedImage croppedImage = image.getSubimage(0, Math.round((image.getHeight() - image.getWidth()) / 2), image.getWidth(), image.getWidth());
-                        ImageIO.write(croppedImage, "jpg", new File(uploadPath + "/" + fileName));
+                        ImageIO.write(croppedImage, "jpg", new File(uploadsPath + "/" + fileName));
                     } else if (image.getWidth() > image.getHeight()) {
                         BufferedImage croppedImage = image.getSubimage(Math.round((image.getWidth() - image.getHeight()) / 2), 0, image.getHeight(), image.getHeight());
-                        ImageIO.write(croppedImage, "jpg", new File(uploadPath + "/" + fileName));
+                        ImageIO.write(croppedImage, "jpg", new File(uploadsPath + "/" + fileName));
                     } else {
-                        ImageIO.write(image, "jpg", new File(uploadPath + "/" + fileName));
+                        ImageIO.write(image, "jpg", new File(uploadsPath + "/" + fileName));
                     }
                 }
                 recipe.setFilename(fileName);

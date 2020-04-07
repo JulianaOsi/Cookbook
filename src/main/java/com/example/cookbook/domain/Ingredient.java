@@ -20,7 +20,7 @@ public class Ingredient {
     }
 
     public Ingredient(Recipe recipe, IngredientType type, int amount) {
-        this.recipe =recipe;
+        this.recipe = recipe;
         this.type = type;
         this.amount = amount;
     }
