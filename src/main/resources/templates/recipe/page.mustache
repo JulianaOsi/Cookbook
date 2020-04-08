@@ -12,24 +12,63 @@
     <title>Recipe</title>
 
     <style type="text/css">
-      .truncated-recipe {
-        height: 70px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        transition: height .5s;
-      }
-      .left {
-        float: left;
-      }
+        .truncated-recipe {
+            height: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: height .5s;
+        }
+        .left {
+            float: left;
+        }
 
-      .right {
-        float: right;
-      }
+        .right {
+            float: right;
+        }
 
+        .selectdiv:after {
+            content: '';
+        }
 
+        /* IE11 hide native button (thanks Matt!) */
+        select::-ms-expand {
+            display: none;
+        }
+
+        .selectdiv select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            /* Add some styling */
+
+            display: block;
+            background-color: #ffffff;
+            background-image: none;
+            border: 1px solid #0ebeff;
+            -ms-word-break: normal;
+            word-break: normal;
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="jq_functions.js"></script>
+    <script>
+function showReactions() {
+    var window = document.getElementById("allReactionsWindow");
+    if (window.style.display === "none") {
+        window.style.display = "block";
+    } else {
+        window.style.display = "none";
+    }
+};
+
+function submitReaction(button) {
+    var filename = button.name;
+    var formInput = document.getElementById("reactionFormInput");
+    formInput.value = filename;
+    var form = document.getElementById("reactionForm");
+    form.submit();
+    showReactions();
+};
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -75,10 +114,32 @@
                         <img src="https://via.placeholder.com/200x200?text=Pizza+margarita" class="card-img rounded-0"
                              alt="...">
                     {{/recipe.filename}}
-
-                    {{#reactions}}
-                        <img src="/reactions/{{type.filename}}" class="card-img rounded-0" alt="...">
-                    {{/reactions}}
+                    <form id="reactionForm" method="post" action="/recipe/page/{{id}}/reaction/add" enctype="multipart/form-data">
+                        <input type="hidden" id="reactionFormInput" name="reaction">
+                        <div class="d-flex align-content-start flex-wrap">
+                            <div id="formShowsButton" class="ml-1 p-0 border-0 btn btn-link"
+                                 onclick="showReactions()">
+                                <img src="https://via.placeholder.com/20x20?text=Pizza+margarita" width="20px" alt="">
+                            </div>
+                            {{#reactions}}
+                                <button class="ml-1 p-0 border-0 btn btn-link" name="{{type.filename}}"
+                                        onclick="submitReaction(this)">
+                                    <img src="/reactions/{{type.filename}}" width="20px" alt="">
+                                    <span class="badge badge-light bg-transparent p-0" style="margin-left: -3px">{{count}}</span>
+                                </button>
+                            {{/reactions}}
+                        </div>
+                        <div id="allReactionsWindow" style="display: none">
+                            <div class="d-flex align-content-start flex-wrap bg-light">
+                                {{#reactionsTypes}}
+                                    <button class="ml-1 p-0 border-0 btn btn-link" name="{{filename}}"
+                                            onclick="submitReaction(this)">
+                                        <img src="/reactions/{{filename}}" width="20px" alt="">
+                                    </button>
+                                {{/reactionsTypes}}
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="col-md-8">
                     <div class="d-flex justify-content-between">
