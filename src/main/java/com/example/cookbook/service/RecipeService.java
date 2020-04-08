@@ -107,11 +107,13 @@ public class RecipeService {
 
     public void addReaction(long recipeId, String reaction) {
         Recipe recipe = recipesRepo.getOne(recipeId);
-        Reaction.ReactionType reactionType = Reaction.ReactionType.valueOf(reaction.toUpperCase());
+        Reaction.ReactionType reactionType = Reaction.ReactionType.valueOf(reaction.substring(0, reaction.length() - 4).toUpperCase());
 
         for (Reaction r : recipe.getReactions()) {
             if (r.getType() == reactionType) {
                 r.incrementCount();
+                //reactionRepo.deleteById(r.getId());
+                reactionRepo.save(r);
                 return;
             }
         }

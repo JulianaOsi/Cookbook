@@ -14,8 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class RecipeController {
@@ -65,18 +64,26 @@ public class RecipeController {
         boolean isAccess = user != null && recipeService.isAccess(user.getId(), id);
         model.put("isAccess", isAccess);
         model.put("ingredients", recipe.getIngredients());
+        model.put("reactionsTypes", Reaction.ReactionType.values());
+
         List<Reaction> reactionList = recipe.getReactions();
+        System.out.println(reactionList.get(0).getCount());
+        Comparator<Reaction> compareByCount = Comparator.comparingInt(Reaction::getCount);
+
+        reactionList.sort(compareByCount.reversed());
         model.put("reactions", reactionList);
 
         return new ModelAndView("recipe/page");
     }
 
     @PostMapping("recipe/page/{id}/reaction/add")
-    public void addReaction(
+    public RedirectView addReaction(
+            @AuthenticationPrincipal User user,
             @PathVariable("id") long recipeId,
             @RequestParam String reaction) {
-        // TODO
-        //recipeService.addReaction(recipeId, reaction);
+        // TODO проверить, авторизован ли пользователь
+        recipeService.addReaction(recipeId, reaction);
+        return new RedirectView("/recipe/page/{id}");
     }
 
     @GetMapping("/reactions")
