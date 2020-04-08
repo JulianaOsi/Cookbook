@@ -1,24 +1,27 @@
 package com.example.cookbook.domain;
 
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@Indexed
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Field
     private String title;
 
-    //@Lob
     private String text;
 
-    @CreatedDate
-    private LocalDateTime time;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate time;
 
     private String filename;
 
@@ -26,18 +29,20 @@ public class Recipe {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(mappedBy = "recipe",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Ingredient> ingredients;
 
-    public Recipe(){}
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<Reaction> reactions;
+
+    public Recipe() {
+    }
+
     public Recipe(User user, String title, String text) {
         this.author = user;
         this.title = title;
         this.text = text;
-
-        this.time = LocalDateTime.now();
-        //DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        //this.time = LocalDateTime.parse(LocalDateTime.now().toString(), pattern).format(pattern);
+        this.time = LocalDate.now();
     }
 
     public Long getId() {
@@ -64,11 +69,11 @@ public class Recipe {
         this.text = text;
     }
 
-    public LocalDateTime getTime() {
+    public LocalDate getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(LocalDate time) {
         this.time = time;
     }
 
@@ -94,5 +99,13 @@ public class Recipe {
 
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(List<Reaction> reactions) {
+        this.reactions = reactions;
     }
 }

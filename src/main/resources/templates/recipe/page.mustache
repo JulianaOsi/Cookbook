@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Recipe</title>
 
@@ -25,6 +26,7 @@
         float: right;
       }
 
+
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="jq_functions.js"></script>
@@ -32,7 +34,8 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/recipes">Cookbook</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -45,9 +48,12 @@
                 <a class="nav-link" href="/recipe/add">Add recipe <span class="sr-only">(current)</span></a>
             </li>
         </ul>
-        <div>
+        <div class="d-flex">
             <form action="/logout" method="post">
-                <input type="submit" value="Sign Out"/>
+                <input class="btn btn-outline-primary border-0 my-2 my-sm-0" type="submit" value="Sign In"/>
+            </form>
+            <form action="/logout" method="post">
+                <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Out"/>
             </form>
         </div>
         <form class="form-inline my-2 my-lg-0">
@@ -63,40 +69,50 @@
             <div class="row no-gutters">
                 <div class="col-md-4">
                     {{#recipe.filename}}
-                        <img src="/img/{{recipe.filename}}" class="card-img rounded-0" alt="...">
+                        <img src="/uploads/{{recipe.filename}}" class="card-img rounded-0" alt="...">
                     {{/recipe.filename}}
                     {{^recipe.filename}}
-                        <img src="https://via.placeholder.com/200x200?text=Pizza+margarita" class="card-img rounded-0" alt="...">
+                        <img src="https://via.placeholder.com/200x200?text=Pizza+margarita" class="card-img rounded-0"
+                             alt="...">
                     {{/recipe.filename}}
+
+                    {{#reactions}}
+                        <img src="/reactions/{{type.filename}}" class="card-img rounded-0" alt="...">
+                    {{/reactions}}
                 </div>
                 <div class="col-md-8">
                     <div class="d-flex justify-content-between">
-                        <div class="card-header border-0 bg-transparent">{{recipe.title}}</div>
-                        {{#canDelete}}
-                       <form action="/recipe/page/{{id}}/delete" method="post">
-                            <input type="submit" class="btn btn-danger rounded-0" value="Delete">
-                        </form>
-                        {{/canDelete}}
+                        <h5 class="card-header border-0 bg-transparent">{{recipe.title}}</h5>
+                        <div class="d-flex">
+                            {{#isAccess}}
+                                <form action="/recipe/page/{{id}}/update" method="get">
+                                    <input type="submit" class="btn btn-link" value="Edit">
+                                </form>
+                            {{/isAccess}}
+                            {{#isAccess}}
+                                <form action="/recipe/page/{{id}}/delete" method="post">
+                                    <input type="submit" class="btn btn-danger rounded-0" value="Delete">
+                                </form>
+                            {{/isAccess}}
+                        </div>
                     </div>
 
                     <div class="card-body rounded-0">
-                        <h5 class="card-title">Recipe</h5>
-                        <p class="card-text px-2">{{recipe.text}}</p>
-                        <h5 class="card-title">Ingredients</h5>
-                        <div class="d-flex align-content-start flex-wrap px-2">
-                            {{#ingredients}}
-                              <div class="px-1 text-info">{{type.name}} {{amount}}</div>
-<!--                                <div class="px-1 text-info">Flex item 2</div>-->
-<!--                                <div class="px-1 text-info">Flex item 3</div>-->
-<!--                                <div class="px-1 text-info">Flex item 4</div>-->
-<!--                                <div class="px-1 text-info">Flex item 5</div>-->
-<!--                                <div class="px-1 text-info">Flex item 6</div>-->
-<!--                                <div class="px-1 text-info">Flex item 7</div>-->
-<!--                                <div class="px-1 text-info">Flex item 8</div>-->
-                            {{/ingredients}}
+                        <h6 class="card-subtitle mb-2 text-muted">Ingredients</h6>
+                        <div class="d-flex align-content-start flex-wrap">
+                            <ul class="px-2" style="list-style-type: none;">
+                                {{#ingredients}}
+                                    <div class="px-1 text-info">
+                                        <li>{{type.name}} {{amount}}</li>
+                                    </div>
+                                {{/ingredients}}
+                            </ul>
                         </div>
+                        <h6 class="card-subtitle mb-2 text-muted">Recipe</h6>
+                        <p class="card-text px-2">{{recipe.text}}</p>
                     </div>
-                    <span class="right card-footer border-0 bg-transparent">{{recipe.time}}</span><span class="left card-footer border-0 bg-transparent">{{recipe.author.username}}</span>
+                    <span class="right card-footer border-0 bg-transparent text-muted">{{recipe.time}}</span><span
+                        class="left card-footer border-0 bg-transparent text-muted">{{recipe.author.username}}</span>
                 </div>
             </div>
         </div>
@@ -106,8 +122,14 @@
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
 </body>
 </html>

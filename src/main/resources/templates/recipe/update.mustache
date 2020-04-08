@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <title>Add</title>
+    <title>Update</title>
 
     <style type="text/css">
     </style>
@@ -49,7 +49,6 @@ function processLetters(input){
     let letters = value.replace(/[0-9]/g, "");
     input.value = letters;
 }
-
     </script>
 
 </head>
@@ -67,7 +66,7 @@ function processLetters(input){
                 <a class="nav-link" href="/recipes">Recipes <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link text-secondary" href="/recipes/add">Add recipe <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/recipes/add">Add recipe <span class="sr-only">(current)</span></a>
             </li>
         </ul>
         <div class="d-flex">
@@ -91,38 +90,51 @@ function processLetters(input){
             <label for="exampleFormControlInput1">Name of recipe</label>
             <div class="input-group mb-3 px-2">
                 <input type="text" class="form-control" name="title" id="exampleFormControlInput1"
-                       placeholder="Type text" required>
+                       value="{{recipe.title}}"
+                       placeholder="{{recipe.title}}" required>
             </div>
         </div>
         <div class="form-group">
             <label for="inputGroupFile02">Picture</label>
             <div class="input-group mb-3 px-2">
                 <div class="custom-file">
-                    <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
-                           accept=".jpg, .jpeg, .png">
-                    <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose
-                        file</label>
+                    {{#recipe.filename}}
+                        <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
+                               value="{{recipe.filename}}"
+                               accept=".jpg, .jpeg, .png">
+                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">
+                            {{recipe.filename}}</label>
+                    {{/recipe.filename}}
+                    {{^recipe.filename}}
+                        <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
+                               value="https://via.placeholder.com/200x200?text=Pizza+margarita"
+                               accept=".jpg, .jpeg, .png">
+                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">
+                            https://via.placeholder.com/200x200?text=Pizza+margarita</label>
+                    {{/recipe.filename}}
                 </div>
             </div>
         </div>
         <div class="form-group">
             <label for="inputGroupSelect02">Ingredients</label>
+            {{#recipe.ingredients}}
             <div class="input-group mb-3 px-2">
                 <div class="col-xs-4 d-flex">
                     <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]"
                             aria-expanded="false" required>
-                        <option value="">Choose ingredient...</option>
-                        {{#ingredients}}
+                        <option value="{{type.name}}">{{type.name}}</option>
+                        {{#ingredient_types}}
                             <option value="{{name}}">{{name}}</option>
-                        {{/ingredients}}
+                        {{/ingredient_types}}
                     </select>
-                    <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]"
-                           placeholder="Count" required>
+                    <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]" placeholder="{{amount}}"
+                           value="{{amount}}" required>
                 </div>
                 <button type="button" class="close px-2" onclick="removeIngredient(this)" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            {{/recipe.ingredients}}
             <div class="btn-save btn btn-primary btn-sm d-flex mx-auto justify-content-center" style="width: 70px;"
                  id="addIngredientGroupButton">Add
             </div>
@@ -130,12 +142,11 @@ function processLetters(input){
         <div class="form-group">
             <label for="exampleFormControlTextarea1">Recipe text</label>
             <div class="input-group mb-3 px-2">
-                <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3"
-                          required></textarea>
+                <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3" required>{{recipe.text}}</textarea>
             </div>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-success btn-sm btn-block">Publish</button>
+            <button type="submit" class="btn btn-success btn-sm btn-block">Save</button>
         </div>
     </form>
 
