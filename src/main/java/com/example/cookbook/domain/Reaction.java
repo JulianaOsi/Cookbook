@@ -1,6 +1,8 @@
 package com.example.cookbook.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Reaction {
@@ -16,6 +18,9 @@ public class Reaction {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    @ManyToMany(mappedBy = "reactions")
+    private List<User> users = new ArrayList<>();
+
     public enum ReactionType {
         LIKE("like.png"),
         DISLIKE("dislike.png"),
@@ -26,6 +31,10 @@ public class Reaction {
 
         ReactionType(String filename) {
             this.filename = filename;
+        }
+
+        public static ReactionType getByName (String typeName) {
+           return Reaction.ReactionType.valueOf(typeName.substring(0, typeName.length() - 4).toUpperCase());
         }
     }
 
@@ -38,6 +47,13 @@ public class Reaction {
         this.count = count;
     }
 
+
+    public boolean hasUser(User user){
+        for (User u: users) {
+            if (u.getId().equals(user.getId())) return true;
+        }
+        return false;
+    }
 
     public void incrementCount() {
         count++;
@@ -77,5 +93,13 @@ public class Reaction {
 
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

@@ -6,7 +6,8 @@ import com.example.cookbook.domain.Recipe;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.repo.IngredientRepo;
 import com.example.cookbook.repo.ReactionRepo;
-import com.example.cookbook.repo.RecipesRepo;
+import com.example.cookbook.repo.RecipeRepo;
+import com.example.cookbook.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,13 +20,10 @@ import java.util.*;
 @Service
 public class RecipeService {
     @Autowired
-    private RecipesRepo recipesRepo;
+    private RecipeRepo recipeRepo;
 
     @Autowired
     private IngredientRepo ingredientRepo;
-
-    @Autowired
-    private ReactionRepo reactionRepo;
 
     @Autowired
     FileService fileService;
@@ -42,7 +40,7 @@ public class RecipeService {
         Recipe recipe = new Recipe(author, title, text);
 
         fileService.savePhoto(recipe, file);
-        recipesRepo.save(recipe);
+        recipeRepo.save(recipe);
 
         for (int i = 0; i < ingredientNames.length; i++) {
             ingredientRepo.save(new Ingredient(
@@ -54,18 +52,18 @@ public class RecipeService {
 
     public Iterable<Recipe> getRecipes(String text) {
         Iterable<Recipe> recipes = text == null
-                ? recipesRepo.findAll()
+                ? recipeRepo.findAll()
                 : searchService.search(text);
         Collections.reverse((List<?>) recipes);
         return recipes;
     }
 
     public Recipe getRecipe(long id) {
-        return recipesRepo.getOne(id);
+        return recipeRepo.getOne(id);
     }
 
     public boolean isAccess(long userId, long recipeId) {
-        return recipesRepo
+        return recipeRepo
                 .getOne(recipeId)
                 .getAuthor()
                 .getId() == userId;
@@ -73,7 +71,7 @@ public class RecipeService {
 
     public void deleteRecipe(long userId, long recipeId) {
         if (isAccess(userId, recipeId)) {
-            recipesRepo.deleteById(recipeId);
+            recipeRepo.deleteById(recipeId);
         }
     }
 
@@ -87,13 +85,13 @@ public class RecipeService {
             int[] ingredientAmounts) throws IOException {
         if (isAccess(userId, recipeId)) {
 
-            Recipe updatingRecipe = recipesRepo.getOne(recipeId);
+            Recipe updatingRecipe = recipeRepo.getOne(recipeId);
             fileService.savePhoto(updatingRecipe, file);
 
             updatingRecipe.setTitle(title);
             updatingRecipe.setText(text);
             updatingRecipe.setTime(LocalDate.now());
-            recipesRepo.save(updatingRecipe);
+            recipeRepo.save(updatingRecipe);
 
             ingredientRepo.deleteAll(updatingRecipe.getIngredients());
             for (int i = 0; i < ingredientNames.length; i++) {
@@ -105,18 +103,5 @@ public class RecipeService {
         }
     }
 
-    public void addReaction(long recipeId, String reaction) {
-        Recipe recipe = recipesRepo.getOne(recipeId);
-        Reaction.ReactionType reactionType = Reaction.ReactionType.valueOf(reaction.substring(0, reaction.length() - 4).toUpperCase());
 
-        for (Reaction r : recipe.getReactions()) {
-            if (r.getType() == reactionType) {
-                r.incrementCount();
-                //reactionRepo.deleteById(r.getId());
-                reactionRepo.save(r);
-                return;
-            }
-        }
-        reactionRepo.save(new Reaction(recipe, reactionType, 1));
-    }
 }

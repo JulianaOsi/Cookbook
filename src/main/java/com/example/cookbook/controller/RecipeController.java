@@ -4,6 +4,7 @@ import com.example.cookbook.domain.Ingredient;
 import com.example.cookbook.domain.Reaction;
 import com.example.cookbook.domain.Recipe;
 import com.example.cookbook.domain.User;
+import com.example.cookbook.service.ReactionService;
 import com.example.cookbook.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +21,9 @@ import java.util.*;
 public class RecipeController {
     @Autowired
     RecipeService recipeService;
+
+    @Autowired
+    ReactionService reactionService;
 
     @GetMapping("/")
     public RedirectView redirectToRecipes() {
@@ -67,7 +71,6 @@ public class RecipeController {
         model.put("reactionsTypes", Reaction.ReactionType.values());
 
         List<Reaction> reactionList = recipe.getReactions();
-        System.out.println(reactionList.get(0).getCount());
         Comparator<Reaction> compareByCount = Comparator.comparingInt(Reaction::getCount);
 
         reactionList.sort(compareByCount.reversed());
@@ -80,9 +83,8 @@ public class RecipeController {
     public RedirectView addReaction(
             @AuthenticationPrincipal User user,
             @PathVariable("id") long recipeId,
-            @RequestParam String reaction) {
-        // TODO проверить, авторизован ли пользователь
-        recipeService.addReaction(recipeId, reaction);
+            @RequestParam String reactionTypeName) {
+        reactionService.addReaction(user, recipeId, reactionTypeName);
         return new RedirectView("/recipe/page/{id}");
     }
 

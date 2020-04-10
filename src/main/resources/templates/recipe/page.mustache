@@ -115,7 +115,7 @@ function submitReaction(button) {
                              alt="...">
                     {{/recipe.filename}}
                     <form id="reactionForm" method="post" action="/recipe/page/{{id}}/reaction/add" enctype="multipart/form-data">
-                        <input type="hidden" id="reactionFormInput" name="reaction">
+                        <input type="hidden" id="reactionFormInput" name="reactionTypeName">
                         <div class="d-flex align-content-start flex-wrap">
                             <div id="formShowsButton" class="ml-1 p-0 border-0 btn btn-link"
                                  onclick="showReactions()">
