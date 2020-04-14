@@ -1,13 +1,8 @@
 package com.example.cookbook.service;
 
-import com.example.cookbook.domain.Ingredient;
-import com.example.cookbook.domain.Reaction;
-import com.example.cookbook.domain.Recipe;
-import com.example.cookbook.domain.User;
+import com.example.cookbook.domain.*;
 import com.example.cookbook.repo.IngredientRepo;
-import com.example.cookbook.repo.ReactionRepo;
 import com.example.cookbook.repo.RecipeRepo;
-import com.example.cookbook.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,7 +57,7 @@ public class RecipeService {
         return recipeRepo.getOne(id);
     }
 
-    public boolean isAccess(long userId, long recipeId) {
+    public boolean isAuthor(long userId, long recipeId) {
         return recipeRepo
                 .getOne(recipeId)
                 .getAuthor()
@@ -70,7 +65,7 @@ public class RecipeService {
     }
 
     public void deleteRecipe(long userId, long recipeId) {
-        if (isAccess(userId, recipeId)) {
+        if (isAuthor(userId, recipeId)) {
             recipeRepo.deleteById(recipeId);
         }
     }
@@ -83,7 +78,7 @@ public class RecipeService {
             MultipartFile file,
             String[] ingredientNames,
             int[] ingredientAmounts) throws IOException {
-        if (isAccess(userId, recipeId)) {
+        if (isAuthor(userId, recipeId)) {
 
             Recipe updatingRecipe = recipeRepo.getOne(recipeId);
             fileService.savePhoto(updatingRecipe, file);

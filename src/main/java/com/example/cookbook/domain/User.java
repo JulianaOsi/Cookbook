@@ -27,6 +27,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<Recipe> recipes;
 
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_reaction",
