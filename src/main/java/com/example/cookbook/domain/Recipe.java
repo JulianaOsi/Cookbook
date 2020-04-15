@@ -35,6 +35,9 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Reaction> reactions;
 
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
+
     public Recipe() {
     }
 
@@ -107,5 +110,13 @@ public class Recipe {
 
     public void setReactions(List<Reaction> reactions) {
         this.reactions = reactions;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

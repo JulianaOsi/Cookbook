@@ -1,9 +1,8 @@
 package com.example.cookbook.controller;
 
-import com.example.cookbook.domain.Ingredient;
-import com.example.cookbook.domain.Reaction;
-import com.example.cookbook.domain.Recipe;
-import com.example.cookbook.domain.User;
+import com.example.cookbook.domain.*;
+import com.example.cookbook.service.CommentService;
+import com.example.cookbook.service.ReactionService;
 import com.example.cookbook.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +20,12 @@ public class RecipeController {
     @Autowired
     RecipeService recipeService;
 
+    @Autowired
+    ReactionService reactionService;
+
+    @Autowired
+    CommentService commentService;
+
     @GetMapping("/")
     public RedirectView redirectToRecipes() {
         return new RedirectView("/recipes");
@@ -35,7 +40,7 @@ public class RecipeController {
     }
 
     @GetMapping("recipe/add")
-    public ModelAndView addRecipeWindow(Map<String, Object> model) {
+    public ModelAndView getRecipeAddForm(Map<String, Object> model) {
         model.put("ingredients", Ingredient.IngredientType.values());
         return new ModelAndView("recipe/add", model);
     }
@@ -61,13 +66,12 @@ public class RecipeController {
         Recipe recipe = recipeService.getRecipe(id);
         model.put("recipe", recipe);
 
-        boolean isAccess = user != null && recipeService.isAccess(user.getId(), id);
+        boolean isAccess = user != null && recipeService.isAuthor(user.getId(), id);
         model.put("isAccess", isAccess);
         model.put("ingredients", recipe.getIngredients());
         model.put("reactionsTypes", Reaction.ReactionType.values());
 
         List<Reaction> reactionList = recipe.getReactions();
-        System.out.println(reactionList.get(0).getCount());
         Comparator<Reaction> compareByCount = Comparator.comparingInt(Reaction::getCount);
 
         reactionList.sort(compareByCount.reversed());
@@ -80,16 +84,9 @@ public class RecipeController {
     public RedirectView addReaction(
             @AuthenticationPrincipal User user,
             @PathVariable("id") long recipeId,
-            @RequestParam String reaction) {
-        // TODO проверить, авторизован ли пользователь
-        recipeService.addReaction(recipeId, reaction);
+            @RequestParam String reactionTypeName) {
+        reactionService.addReaction(user, recipeId, reactionTypeName);
         return new RedirectView("/recipe/page/{id}");
-    }
-
-    @GetMapping("/reactions")
-    public void getAllReactions() {
-        // TODO
-        //recipeService.getAllReactions();
     }
 
     @PostMapping("recipe/page/{id}/delete")
@@ -101,7 +98,7 @@ public class RecipeController {
     }
 
     @GetMapping("recipe/page/{id}/update")
-    public ModelAndView updateRecipeWindow(
+    public ModelAndView getRecipeUpdateForm(
             @PathVariable("id") long recipeId,
             Map<String, Object> model) {
         model.put("recipe", recipeService.getRecipe(recipeId));
@@ -120,5 +117,40 @@ public class RecipeController {
             @RequestParam(value = "counter[]") int[] ingredientAmounts) throws IOException {
         recipeService.updateRecipe(user.getId(), recipeId, title, text, file, ingredientNames, ingredientAmounts);
         return new RedirectView("/recipe/page/{id}");
+    }
+
+    @PostMapping("recipe/page/{id}/comment/add")
+    public RedirectView addComment(
+            @AuthenticationPrincipal User user,
+            @PathVariable("id") long recipeId,
+            @RequestParam String text) {
+        commentService.addComment(user, recipeId, text);
+        return new RedirectView("/recipe/page/{id}");
+    }
+
+    @GetMapping("recipe/page/{r_id}/comment/{c_id}/update")
+    public RedirectView getCommentUpdateForm(
+            @PathVariable("c_id") long commentId,
+            Map<String, Object> model) {
+        Comment comment = commentService.getComment(commentId);
+        model.put("comment", comment);
+        return new RedirectView("/recipe/page/{r_id}");
+    }
+
+    @PostMapping("recipe/page/{r_id}/comment/{c_id}/update")
+    public RedirectView updateComment(
+            @AuthenticationPrincipal User user,
+            @PathVariable("c_id") long commentId,
+            @RequestParam String text) {
+        commentService.updateComment(user.getId(), commentId, text);
+        return new RedirectView("/recipe/page/{r_id}");
+    }
+
+    @PostMapping("recipe/page/{r_id}/comment/{c_id}/delete")
+    public RedirectView deleteComment(
+            @AuthenticationPrincipal User user,
+            @PathVariable("c_id") long commentId) {
+        commentService.deleteComment(user.getId(),commentId);
+        return new RedirectView("/recipe/page/{r_id}");
     }
 }
