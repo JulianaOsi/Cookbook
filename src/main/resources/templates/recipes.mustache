@@ -12,27 +12,30 @@
     <title>Recipes</title>
 
     <style type="text/css">
-      .truncated-recipe {
-        height: 70px;
+    body {
+        padding-top: 5rem;
+    }
+
+    .truncated-recipe {
+        height: 68px;
         overflow: hidden;
         text-overflow: ellipsis;
-        transition: height .5s;
-      }
+    }
 
-      .left
-      {
+    .left
+    {
         float: left;
-      }
+    }
 
-      .right
-      {
+    .right
+    {
         float: right;
-      }
+    }
 
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" href="/recipes">Cookbook</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,43 +66,44 @@
     </div>
 </nav>
 
-<div class="d-flex p-2 justify-content-center">
-    <div class="row-cols-1" style="width: 740px;">
-        {{#recipes}}
-            <div class="card border mb-3 ">
-                <a href="recipe/page/{{id}}" class="text-decoration-none text-reset row no-gutters">
-                    <div class="col-md-4">
-                        {{#filename}}
-                            <img src="/uploads/{{filename}}" class="card-img rounded-0" alt="...">
-                        {{/filename}}
-                        {{^filename}}
-                            <img src="https://via.placeholder.com/200x200?text=Pizza+margarita"
-                                 class="card-img rounded-0" alt="...">
-                        {{/filename}}
-                    </div>
-                    <div class="col-md-8">
-                        <h5 class="card-header rounded-0">{{title}}</h5>
-                        <div class="card-body rounded-0">
-                            <h6 class="card-subtitle mb-2 text-muted">Recipe</h6>
-                            <p class="card-text truncated-recipe px-2">{{text}}</p>
-
-                            <!--                            <h5 class="card-title text-primary">Ingredients:</h5>-->
-                            <div class="d-flex align-content-start flex-wrap px-2 text-muted">
-                                Ingredients:
-                                {{#ingredients}}
-                                    <div class="px-1 text-info">{{type.name}}</div>
-                                {{/ingredients}}
-                            </div>
+<main role="main" class="container">
+    <div class="d-flex p-2 justify-content-center">
+        <div class="row-cols-1" style="width: 740px;">
+            {{#recipes}}
+                <div class="card border mb-3 ">
+                    <a href="recipe/page/{{id}}" class="text-decoration-none text-reset row no-gutters">
+                        <div class="col-md-4">
+                            {{#filename}}
+                                <img src="/uploads/{{filename}}" class="card-img rounded-0" alt="...">
+                            {{/filename}}
+                            {{^filename}}
+                                <img src="https://via.placeholder.com/200x200?text=Pizza+margarita"
+                                     class="card-img rounded-0" alt="...">
+                            {{/filename}}
                         </div>
-                        <span class="right card-footer border-0 bg-transparent text-secondary">{{time}}</span>
-                        <span class="left card-footer border-0 bg-transparent text-secondary">{{author.username}}</span>
-                    </div>
-                </a>
-            </div>
-        {{/recipes}}
-    </div>
-</div>
+                        <div class="col-md-8">
+                            <h5 class="card-header border-0 bg-transparent">{{title}}</h5>
+                            <div class="card-body rounded-0 pb-0">
+                                <h6 class="card-subtitle mb-2 text-muted">Recipe</h6>
+                                <p class="card-text truncated-recipe px-2">{{text}}</p>
 
+                                <!--                            <h5 class="card-title text-primary">Ingredients:</h5>-->
+                                <div class="d-flex align-content-start flex-wrap px-2 text-muted">
+                                    Ingredients:
+                                    {{#ingredients}}
+                                        <div class="px-1 text-info">{{type.name}}</div>
+                                    {{/ingredients}}
+                                </div>
+                            </div>
+                            <small class="right card-footer border-0 bg-transparent text-muted">{{time}}</small>
+                            <small class="left card-footer border-0 bg-transparent text-muted">Author: {{author.username}}</small>
+                        </div>
+                    </a>
+                </div>
+            {{/recipes}}
+        </div>
+    </div>
+</main>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
