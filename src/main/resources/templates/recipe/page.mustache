@@ -64,7 +64,7 @@ function showReactions() {
     } else {
         window.style.display = "none";
     }
-};
+}
 
 function submitReaction(button) {
     var filename = button.name;
@@ -72,7 +72,19 @@ function submitReaction(button) {
     formInput.value = filename;
     var form = document.getElementById("reactionForm");
     form.submit();
-};
+}
+
+function onEditComment(button) {
+    var root = button.parentElement.parentElement.parentElement;
+    root.nextElementSibling.setAttribute("style", "display: none");
+    root.nextElementSibling.nextElementSibling.setAttribute("style", "display: block");
+}
+
+function onCancelEditingComment(button) {
+    var root = button.parentElement;
+    root.previousElementSibling.setAttribute("style", "display: block");
+    root.setAttribute("style", "display: none");
+}
     </script>
 </head>
 <body>
@@ -184,29 +196,52 @@ function submitReaction(button) {
                 </div>
             </div>
             <div class="my-3 p-3 bg-white rounded">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Сomments: (Count)</h6>
-                <div class="media text-muted pt-3">
-                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                        <div class="d-flex justify-content-start align-items-center w-100">
-                            <strong class="text-gray-dark">(User)</strong>
-                            <a class="px-2" href="#">Reply</a>
+                <h6 class="border-bottom border-gray pb-2 mb-0">Сomments: {{comments.count}}</h6>
+                {{#comments}}
+                    <div class="media pt-3">
+                        <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <div>
+                                    <strong class="text-gray-dark">{{comment.author.username}}</strong>
+                                    <a class="px-2" href="#">Reply</a>
+                                </div>
+                                <div>
+                                    {{#isAccess}}
+                                        <form action="/recipe/page/{{id}}" method="post">
+                                            <button type="button" onclick="onEditComment(this)" class="px-1 py-0 text-secondary bg-transparent border-0">
+                                                Edit</button>
+                                            <button type="submit" class="px-1 py-0 text-danger bg-transparent border-0">
+                                                Remove</button>
+                                        </form>
+                                    {{/isAccess}}
+                                </div>
+                            </div>
+                            <p class="px-1 m-0 pt-1" style="display: block">
+                                {{comment.text}}
+                            </p>
+                            <form method="post" enctype="multipart/form-data" style="display: none">
+                                <textarea name="editedCommentText" class="form-control px-1 m-0 pt-1 border-0 overflow-auto bg-light">{{comment.text}}</textarea>
+                                <button type="submit" class="px-2 pt-1 text-success bg-transparent border-0">
+                                    Save</button>
+                                <button type="button" onclick="onCancelEditingComment(this)" class="px-2 pt-1 text-secondary bg-transparent border-0">
+                                    Cancel</button>
+                            </form>
                         </div>
-                        <p class="px-1 m-0 pt-1">
-                            (Text)Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-                        </p>
                     </div>
-                </div>
+                {{/comments}}
 
                 <small class="d-block text-right mt-3">
-                    <a href="#">Show all (Count) comments</a>
+                    <a href="#">Show all {{comments.count}} comments</a>
                 </small>
-                <form method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="commentTextarea">Add a comment</label>
-                        <textarea class="form-control" id="commentTextarea" placeholder="Write text"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+                {{#isAccess}}
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="commentTextarea">Add a comment</label>
+                            <textarea name="addedCommentText" class="form-control" id="commentTextarea" placeholder="..." rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                {{/isAccess}}
             </div>
         </div>
     </div>
