@@ -54,7 +54,7 @@ function processLetters(input){
 
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <a class="navbar-brand" href="/recipes">Cookbook</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,61 +85,62 @@ function processLetters(input){
     </div>
 </nav>
 
-<div class="d-flex p-2 justify-content-center">
-    <form method="post" style="width: 740px;" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Name of recipe</label>
-            <div class="input-group mb-3 px-2">
-                <input type="text" class="form-control" name="title" id="exampleFormControlInput1"
-                       placeholder="Type text" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="inputGroupFile02">Picture</label>
-            <div class="input-group mb-3 px-2">
-                <div class="custom-file">
-                    <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
-                           accept=".jpg, .jpeg, .png">
-                    <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose
-                        file</label>
+<main role="main" class="container">
+    <div class="d-flex p-2 justify-content-center">
+        <form method="post" style="width: 740px;" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Name of recipe</label>
+                <div class="input-group mb-3 px-2">
+                    <input type="text" class="form-control" name="title" id="exampleFormControlInput1"
+                           placeholder="Type text" required>
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="inputGroupSelect02">Ingredients</label>
-            <div class="input-group mb-3 px-2">
-                <div class="col-xs-4 d-flex">
-                    <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]"
-                            aria-expanded="false" required>
-                        <option value="">Choose ingredient...</option>
-                        {{#ingredients}}
-                            <option value="{{name}}">{{name}}</option>
-                        {{/ingredients}}
-                    </select>
-                    <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]"
-                           placeholder="Count" required>
+            <div class="form-group">
+                <label for="inputGroupFile02">Picture</label>
+                <div class="input-group mb-3 px-2">
+                    <div class="custom-file">
+                        <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
+                               accept=".jpg, .jpeg, .png">
+                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose
+                            file</label>
+                    </div>
                 </div>
-                <button type="button" class="close px-2" onclick="removeIngredient(this)" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
-            <div class="btn-save btn btn-primary btn-sm d-flex mx-auto justify-content-center" style="width: 70px;"
-                 id="addIngredientGroupButton">Add
+            <div class="form-group">
+                <label for="inputGroupSelect02">Ingredients</label>
+                <div class="input-group mb-3 px-2">
+                    <div class="col-xs-4 d-flex">
+                        <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]"
+                                aria-expanded="false" required>
+                            <option value="">Choose ingredient...</option>
+                            {{#ingredients}}
+                                <option value="{{name}}">{{name}}</option>
+                            {{/ingredients}}
+                        </select>
+                        <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]"
+                               placeholder="Count" required>
+                    </div>
+                    <button type="button" class="close px-2" onclick="removeIngredient(this)" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="btn-save btn btn-primary btn-sm d-flex mx-auto justify-content-center" style="width: 70px;"
+                     id="addIngredientGroupButton">Add
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="exampleFormControlTextarea1">Recipe text</label>
-            <div class="input-group mb-3 px-2">
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Recipe text</label>
+                <div class="input-group mb-3 px-2">
                 <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3"
                           required></textarea>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success btn-sm btn-block">Publish</button>
-        </div>
-    </form>
-
-</div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success btn-sm btn-block">Publish</button>
+            </div>
+        </form>
+    </div>
+</main>
 
 
 <!-- Optional JavaScript -->
