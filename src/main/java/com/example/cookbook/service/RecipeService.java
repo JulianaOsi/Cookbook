@@ -21,7 +21,7 @@ public class RecipeService {
     private IngredientRepo ingredientRepo;
 
     @Autowired
-    FileService fileService;
+    PhotoService photoService;
 
     @Autowired
     HibernateSearchService searchService;
@@ -34,7 +34,7 @@ public class RecipeService {
                           int[] ingredientAmounts) throws IOException {
         Recipe recipe = new Recipe(author, title, text);
 
-        fileService.savePhoto(recipe, file);
+        photoService.savePhoto(recipe, file);
         recipeRepo.save(recipe);
 
         for (int i = 0; i < ingredientNames.length; i++) {
@@ -81,7 +81,7 @@ public class RecipeService {
         if (isAuthor(userId, recipeId)) {
 
             Recipe updatingRecipe = recipeRepo.getOne(recipeId);
-            fileService.savePhoto(updatingRecipe, file);
+            photoService.savePhoto(updatingRecipe, file);
 
             updatingRecipe.setTitle(title);
             updatingRecipe.setText(text);

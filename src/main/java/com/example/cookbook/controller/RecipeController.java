@@ -35,6 +35,7 @@ public class RecipeController {
     public ModelAndView getRecipes(
             @RequestParam(required = false) String search,
             Map<String, Object> model) {
+        List<Recipe> recipes = (List<Recipe>) recipeService.getRecipes(search);
         model.put("recipes", recipeService.getRecipes(search));
         return new ModelAndView("recipes", model);
     }
@@ -76,6 +77,7 @@ public class RecipeController {
 
         reactionList.sort(compareByCount.reversed());
         model.put("reactions", reactionList);
+        model.put("comments", recipe.getComments());
 
         return new ModelAndView("recipe/page");
     }
