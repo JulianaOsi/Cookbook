@@ -1,8 +1,8 @@
 package com.example.cookbook.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Reaction {
@@ -18,8 +18,12 @@ public class Reaction {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
-    @ManyToMany(mappedBy = "reactions")
-    private List<User> users = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_reaction",
+            joinColumns = @JoinColumn(name = "reaction_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> users = new HashSet<>();
 
     public enum ReactionType {
         LIKE("like.png"),
@@ -33,23 +37,21 @@ public class Reaction {
             this.filename = filename;
         }
 
-        public static ReactionType getByName (String typeName) {
-           return Reaction.ReactionType.valueOf(typeName.substring(0, typeName.length() - 4).toUpperCase());
+        public static ReactionType getByName(String typeName) {
+            return Reaction.ReactionType.valueOf(typeName.substring(0, typeName.length() - 4).toUpperCase());
         }
     }
 
     public Reaction() {
     }
 
-    public Reaction(Recipe recipe, ReactionType type, int count) {
+    public Reaction(Recipe recipe, ReactionType type) {
         this.recipe = recipe;
         this.type = type;
-        this.count = count;
     }
 
-
-    public boolean hasUser(User user){
-        for (User u: users) {
+    public boolean hasUser(User user) {
+        for (User u : users) {
             if (u.getId().equals(user.getId())) return true;
         }
         return false;
@@ -57,6 +59,10 @@ public class Reaction {
 
     public void incrementCount() {
         count++;
+    }
+
+    public void decrementCount() {
+        count--;
     }
 
     public Reaction.ReactionType[] getAllReactions() {
@@ -95,11 +101,11 @@ public class Reaction {
         this.recipe = recipe;
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 }

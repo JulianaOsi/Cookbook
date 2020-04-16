@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.UUID;
 
 @Service
-public class FileService {
+public class PhotoService {
 
     @Value("${uploads.path}")
     private String uploadsPath;
