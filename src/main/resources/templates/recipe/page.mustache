@@ -196,18 +196,18 @@ function onCancelEditingComment(button) {
                 </div>
             </div>
             <div class="my-3 p-3 bg-white rounded">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Сomments: {{comments.count}}</h6>
+                <h6 class="border-bottom border-gray pb-2 mb-0">Сomments: ((comments.count))</h6>
                 {{#comments}}
                     <div class="media pt-3">
                         <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                             <div class="d-flex justify-content-between align-items-center w-100">
                                 <div>
-                                    <strong class="text-gray-dark">{{comment.author.username}}</strong>
+                                    <strong class="text-gray-dark">{{author.username}}</strong>
                                     <a class="px-2" href="#">Reply</a>
                                 </div>
                                 <div>
                                     {{#isAccess}}
-                                        <form action="/recipe/page/{{id}}" method="post">
+                                        <form action="/recipe/page/{{r_id}}/comment/{{c_id}}/delete" method="post">
                                             <button type="button" onclick="onEditComment(this)" class="px-1 py-0 text-secondary bg-transparent border-0">
                                                 Edit</button>
                                             <button type="submit" class="px-1 py-0 text-danger bg-transparent border-0">
@@ -217,10 +217,10 @@ function onCancelEditingComment(button) {
                                 </div>
                             </div>
                             <p class="px-1 m-0 pt-1" style="display: block">
-                                {{comment.text}}
+                                {{text}}
                             </p>
-                            <form method="post" enctype="multipart/form-data" style="display: none">
-                                <textarea name="editedCommentText" class="form-control px-1 m-0 pt-1 border-0 overflow-auto bg-light">{{comment.text}}</textarea>
+                            <form method="post" action="/recipe/page/{{r_id}}/comment/{{c_id}}/update" enctype="multipart/form-data" style="display: none">
+                                <textarea name="text" class="form-control px-1 m-0 pt-1 border-0 overflow-auto bg-light">{{text}}</textarea>
                                 <button type="submit" class="px-2 pt-1 text-success bg-transparent border-0">
                                     Save</button>
                                 <button type="button" onclick="onCancelEditingComment(this)" class="px-2 pt-1 text-secondary bg-transparent border-0">
@@ -231,13 +231,13 @@ function onCancelEditingComment(button) {
                 {{/comments}}
 
                 <small class="d-block text-right mt-3">
-                    <a href="#">Show all {{comments.count}} comments</a>
+                    <a href="#">Show all ((comments.count)) comments</a>
                 </small>
                 {{#isAccess}}
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post" action="/recipe/page/{{id}}/comment/add" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="commentTextarea">Add a comment</label>
-                            <textarea name="addedCommentText" class="form-control" id="commentTextarea" placeholder="..." rows="2"></textarea>
+                            <textarea name="text" class="form-control" id="commentTextarea" placeholder="..." rows="2"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
