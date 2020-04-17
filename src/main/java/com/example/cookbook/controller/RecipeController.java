@@ -67,17 +67,28 @@ public class RecipeController {
         Recipe recipe = recipeService.getRecipe(id);
         model.put("recipe", recipe);
 
-        boolean isAccess = user != null && recipeService.isAuthor(user.getId(), id);
-        model.put("isAccess", isAccess);
-        model.put("ingredients", recipe.getIngredients());
-        model.put("reactionsTypes", Reaction.ReactionType.values());
+        boolean isUserAuthorized = user != null;
+        model.put("isUserAuthorized", isUserAuthorized);
 
+        boolean hasAccessToRecipe = isUserAuthorized && recipeService.isAuthor(user.getId(), id);
+        model.put("hasAccessToRecipe", hasAccessToRecipe);
+
+        model.put("ingredients", recipe.getIngredients());
+
+        Map<Comment, Boolean> comments = new HashMap<>();
+        recipe
+                .getComments()
+                .forEach(comment -> {
+                    boolean hasAccess = isUserAuthorized && commentService.isAuthor(user.getId(), comment.getId());
+                    comments.put(comment, hasAccess);
+                });
+        model.put("comments", comments.entrySet());
+
+        model.put("reactionsTypes", Reaction.ReactionType.values());
         List<Reaction> reactionList = recipe.getReactions();
         Comparator<Reaction> compareByCount = Comparator.comparingInt(Reaction::getCount);
-
         reactionList.sort(compareByCount.reversed());
         model.put("reactions", reactionList);
-        model.put("comments", recipe.getComments());
 
         return new ModelAndView("recipe/page");
     }
@@ -152,7 +163,7 @@ public class RecipeController {
     public RedirectView deleteComment(
             @AuthenticationPrincipal User user,
             @PathVariable("c_id") long commentId) {
-        commentService.deleteComment(user.getId(),commentId);
+        commentService.deleteComment(user.getId(), commentId);
         return new RedirectView("/recipe/page/{r_id}");
     }
 }
