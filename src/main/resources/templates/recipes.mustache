@@ -10,10 +10,19 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Recipes</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <style type="text/css">
     body {
         padding-top: 5rem;
+    }
+
+    td {
+        cursor: pointer;
+    }
+
+    table {
+        position: absolute;
     }
 
     .truncated-recipe {
@@ -67,10 +76,22 @@
 </nav>
 
 <main role="main" class="container">
+    <label>Quick Search: <input id="search" type="text" placeholder="+ingredient"></label>
+    <table>
+        <tr>
+            <td class="ingredient">Potato</td>
+        </tr>
+        <tr>
+            <td class="ingredient">Tomato</td>
+        </tr>
+        <tr>
+            <td class="ingredient">Egg</td>
+        </tr>
+    </table>
     <div class="d-flex p-2 justify-content-center">
         <div class="row-cols-1" style="width: 740px;">
             {{#recipes}}
-                <div class="card border mb-3 ">
+                <div class="card border mb-3 recipe">
                     <a href="recipe/page/{{id}}" class="text-decoration-none text-reset row no-gutters">
                         <div class="col-md-4">
                             {{#filename}}
@@ -86,12 +107,10 @@
                             <div class="card-body rounded-0 pb-0">
                                 <h6 class="card-subtitle mb-2 text-muted">Recipe</h6>
                                 <p class="card-text truncated-recipe px-2">{{text}}</p>
-
-                                <!--                            <h5 class="card-title text-primary">Ingredients:</h5>-->
                                 <div class="d-flex align-content-start flex-wrap px-2 text-muted">
                                     Ingredients:
                                     {{#ingredients}}
-                                        <div class="px-1 text-info">{{type.name}}</div>
+                                        <div class="px-1 text-info recipe-ingredient">{{type.name}}</div>
                                     {{/ingredients}}
                                 </div>
                             </div>
@@ -106,6 +125,82 @@
 </main>
 
 <!-- Optional JavaScript -->
+<script>
+    window.onload = function(){ $("tr").hide(); };
+
+    $(document).ready(function(){
+        $.fn.setClasses = function(classes) {
+            this.attr('class', classes);
+            return this;
+        };
+    });
+
+    $(document).mouseup(function(e)
+    {
+        var container = $("tr");
+
+        // if the target of the click isn't the container nor a descendant of the container
+        if (!container.is(e.target) && container.has(e.target).length === 0)
+            container.hide();
+    });
+
+    $(document).on('click', '#search', function () {
+        $("td.ingredient").each(function (ind, ingred) {
+            if ($(ingred).hasClass("ingredient-selected"))
+                $(ingred).parent().show();
+        })
+    });
+
+    $( "#search" ).on({
+        keyup: function() {
+            var $cells = $("td.ingredient:not(.ingredient-selected)");
+            var val = $.trim(this.value).toUpperCase();
+            if (val === "")
+                $cells.parent().show();
+            else {
+                $cells.parent().hide();
+                $cells.filter(function() {
+                    return -1 != $(this).text().toUpperCase().indexOf(val); }).parent().show();
+            }
+        }
+    });
+
+    $(document).on('click', '.ingredient', function () {
+        let newClass = "ingredient-selected text-success";
+        if ($(this).hasClass(newClass))
+            $(this).removeClass(newClass);
+        else
+            $(this).addClass(newClass);
+
+        let sel_ingredients = [];
+
+        $(".ingredient").each(function (ind, ingred) {
+            if ($(ingred).hasClass("ingredient-selected"))
+                sel_ingredients.push($(ingred).text().toLowerCase());
+        })
+        if (sel_ingredients.length === 0)
+            $(".recipe").each(function (i, recipe) {
+                $(recipe).show();
+            })
+        else {
+            $(".recipe").each(function ( index, recipe ) {
+                $(recipe).hide();
+                $(recipe)
+                        .find(".recipe-ingredient")
+                        .each(function (_, ingredient) {
+                            let ingredientName = $(ingredient).text();
+                            if (!(jQuery.inArray(ingredientName, sel_ingredients) === -1))
+                            {
+                                $(recipe).show();
+                                return false;
+                            }
+                        });
+            });
+        }
+    });
+
+</script>
+
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
