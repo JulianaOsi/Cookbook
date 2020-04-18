@@ -30,11 +30,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_reaction",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "reaction_id"))
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     Set<Reaction> reactions = new HashSet<>();
 
     public Long getId() {
@@ -117,5 +113,13 @@ public class User implements UserDetails {
 
     public void setReactions(Set<Reaction> reactions) {
         this.reactions = reactions;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

@@ -9,6 +9,7 @@ import com.example.cookbook.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -23,32 +24,31 @@ public class ReactionService {
     @Autowired
     private UserRepo userRepo;
 
+    @Transactional
     public void addReaction(User user, long recipeId, String reactionTypeName) {
-        if (!canAddReaction(user, recipeId, reactionTypeName)) return;
+        if (user == null) return;
 
         Recipe recipe = recipeRepo.getOne(recipeId);
         Reaction.ReactionType reactionType = Reaction.ReactionType.getByName(reactionTypeName);
 
         Reaction reaction = findReactionByTypeName(reactionTypeName, recipe.getReactions());
 
-        if (reaction != null) {
-            reaction.incrementCount();
+        if (reaction == null) {
+            reaction = new Reaction(recipe, reactionType);
+        }
+        if (reaction.hasUser(user)) {
+            reaction.decrementCount();
+            reaction.getUsers().removeIf(u -> u.getId().equals(user.getId()));
         } else {
-            reaction = new Reaction(recipe, reactionType, 1);
+            reaction.incrementCount();
+            reaction.getUsers().add(user);
+        }
+        if (reaction.getCount() == 0) {
+            reactionRepo.delete(reaction);
+            return;
         }
 
-        //TODO
-        user.getReactions().clear();
-        user.getReactions().add(reaction);
         reactionRepo.save(reaction);
-        userRepo.save(user);
-    }
-
-    public boolean canAddReaction(User user, long recipeId, String reactionTypeName) {
-        if (user == null) return false;
-        Recipe recipe = recipeRepo.getOne(recipeId);
-        Reaction reaction = findReactionByTypeName(reactionTypeName, recipe.getReactions());
-        return reaction == null || !reaction.hasUser(user);
     }
 
     private Reaction findReactionByTypeName(String reactionTypeName, List<Reaction> reactions) {
@@ -60,9 +60,5 @@ public class ReactionService {
             }
         }
         return null;
-    }
-
-    public void deleteReactions(List<Reaction> reactions) {
-        //TODO
     }
 }
