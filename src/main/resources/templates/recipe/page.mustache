@@ -137,7 +137,7 @@ function onCancelEditingComment(button) {
                             <div class="d-flex align-content-start flex-wrap">
                                 <div id="formShowsButton" class="ml-1 p-0 border-0 btn btn-link"
                                      onclick="showReactions()">
-                                    <img src="https://via.placeholder.com/20x20?text=Pizza+margarita" width="20px" alt="">
+                                    <img src="/icons/addReaction.png" width="35px" alt="">
                                 </div>
                                 {{#reactions}}
                                     <button class="ml-1 p-0 border-0 btn btn-link" name="{{type.filename}}"
@@ -202,7 +202,7 @@ function onCancelEditingComment(button) {
                         <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                             <div class="d-flex justify-content-between align-items-center w-100">
                                 <div>
-                                    <strong class="text-gray-dark">{{key.author.username}}</strong>
+                                    <strong class="text-gray-dark">{{key.author.username}}</strong>, {{key.simpleTime}}
                                     <a class="px-2" href="#">Reply</a>
                                 </div>
                                 <div>

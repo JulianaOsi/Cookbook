@@ -15,6 +15,9 @@ public class MvcConfig implements WebMvcConfigurer {
     @Value("${reactions.path}")
     private String reactionsPath;
 
+    @Value("${icons.path}")
+    private String iconsPath;
+
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
     }
@@ -25,5 +28,7 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addResourceLocations("file://" + uploadsPath + "/");
         registry.addResourceHandler("/reactions/**")
                 .addResourceLocations("file://" + reactionsPath + "/");
+        registry.addResourceHandler("/icons/**")
+                .addResourceLocations("file://" + iconsPath + "/" );
     }
 }
