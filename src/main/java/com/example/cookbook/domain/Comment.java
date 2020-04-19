@@ -1,6 +1,12 @@
 package com.example.cookbook.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Entity
 public class Comment {
@@ -9,6 +15,11 @@ public class Comment {
     private long id;
 
     private String text;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime time;
+
+    private String simpleTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recipe_id")
@@ -25,6 +36,10 @@ public class Comment {
         this.author = author;
         this.recipe = recipe;
         this.text = text;
+        this.time = LocalDateTime.now();
+        String pattern = "dd-MMM-yyyy hh:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        this.simpleTime = simpleDateFormat.format(Date.from( time.atZone( ZoneId.systemDefault()).toInstant()));
     }
 
     public long getId() {
@@ -57,5 +72,13 @@ public class Comment {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
     }
 }

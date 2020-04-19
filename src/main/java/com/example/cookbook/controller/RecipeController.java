@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -74,10 +75,10 @@ public class RecipeController {
         model.put("hasAccessToRecipe", hasAccessToRecipe);
 
         model.put("ingredients", recipe.getIngredients());
-
-        Map<Comment, Boolean> comments = new HashMap<>();
-        recipe
-                .getComments()
+        Map<Comment, Boolean> comments = new LinkedHashMap<>();
+        List<Comment> commentList = recipe.getComments();
+        commentList.sort(Comparator.comparing(Comment::getTime, LocalDateTime::compareTo).reversed());
+        commentList
                 .forEach(comment -> {
                     boolean hasAccess = isUserAuthorized && commentService.isAuthor(user.getId(), comment.getId());
                     comments.put(comment, hasAccess);
