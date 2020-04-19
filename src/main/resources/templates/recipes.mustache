@@ -17,12 +17,35 @@
         padding-top: 5rem;
     }
 
-    td {
+    /* width */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    .ingredient {
         cursor: pointer;
+        /*background-color: #f1f1f1;*/
+        display: none;
     }
 
     table {
         position: absolute;
+        height: 100px;
     }
 
     .truncated-recipe {
@@ -75,19 +98,25 @@
     </div>
 </nav>
 
+<div class="d-flex flex-row flex-wrap p-2 border">
+    <div class="d-flex flex-wrap m-1 bg-light shadow-sm">
+        <input id="searchByIngredients" class="btn border-0 bg-transparent py-1" type="text" placeholder="+Ingredient">
+        <div class="btn btn-success bg-transparent text-success py-1 search-submit">Search</div>
+    </div>
+</div>
+<div class="p-2">
+    <div class="p-2">
+        <ul class="overflow-auto list-unstyled ingredient-dropdown" style="height: auto; max-height: 200px; position: absolute">
+            <li data_object_id="1" class="ingredient p-2 border-top">Milk</li>
+            <li data_object_id="2" class="ingredient p-2 border-top">Potato</li>
+            <li data_object_id="3" class="ingredient p-2 border-top">Cucumber</li>
+            <li data_object_id="4" class="ingredient p-2 border-top">Tomato</li>
+            <li data_object_id="5" class="ingredient p-2 border-top">Salad</li>
+        </ul>
+    </div>
+</div>
+
 <main role="main" class="container">
-    <label>Quick Search: <input id="search" type="text" placeholder="+ingredient"></label>
-    <table>
-        <tr>
-            <td class="ingredient">Potato</td>
-        </tr>
-        <tr>
-            <td class="ingredient">Tomato</td>
-        </tr>
-        <tr>
-            <td class="ingredient">Egg</td>
-        </tr>
-    </table>
     <div class="d-flex p-2 justify-content-center">
         <div class="row-cols-1" style="width: 740px;">
             {{#recipes}}
@@ -126,7 +155,10 @@
 
 <!-- Optional JavaScript -->
 <script>
-    window.onload = function(){ $("tr").hide(); };
+    window.onload = function(){
+        var width = $("#searchByIngredients").parent().width();
+        $(".ingredient-dropdown").css('width', width);
+    };
 
     $(document).ready(function(){
         $.fn.setClasses = function(classes) {
@@ -137,68 +169,70 @@
 
     $(document).mouseup(function(e)
     {
-        var container = $("tr");
+        var container = $(".ingredient");
 
-        // if the target of the click isn't the container nor a descendant of the container
         if (!container.is(e.target) && container.has(e.target).length === 0)
             container.hide();
     });
 
-    $(document).on('click', '#search', function () {
-        $("td.ingredient").each(function (ind, ingred) {
-            if ($(ingred).hasClass("ingredient-selected"))
-                $(ingred).parent().show();
-        })
-    });
-
-    $( "#search" ).on({
+    $( "#searchByIngredients" ).on({
         keyup: function() {
-            var $cells = $("td.ingredient:not(.ingredient-selected)");
+            var $cells = $("li.ingredient:not(.ingredient-selected)");
             var val = $.trim(this.value).toUpperCase();
-            if (val === "")
-                $cells.parent().show();
+            if (val === "") {
+                $cells.hide();
+            }
             else {
-                $cells.parent().hide();
+                $cells.hide();
                 $cells.filter(function() {
-                    return -1 != $(this).text().toUpperCase().indexOf(val); }).parent().show();
+                    return -1 != $(this).text().toUpperCase().indexOf(val);
+                }).show();
             }
         }
     });
 
-    $(document).on('click', '.ingredient', function () {
-        let newClass = "ingredient-selected text-success";
-        if ($(this).hasClass(newClass))
-            $(this).removeClass(newClass);
-        else
-            $(this).addClass(newClass);
-
-        let sel_ingredients = [];
-
-        $(".ingredient").each(function (ind, ingred) {
-            if ($(ingred).hasClass("ingredient-selected"))
-                sel_ingredients.push($(ingred).text().toLowerCase());
+    $(document).on('click', '.search-submit', function () {
+        let ingredients = []
+        $('.ingredient-to-search').each(function (index, ingredient) {
+            ingredients.push($(ingredient).attr("data_object_id"));
         })
-        if (sel_ingredients.length === 0)
-            $(".recipe").each(function (i, recipe) {
-                $(recipe).show();
-            })
-        else {
-            $(".recipe").each(function ( index, recipe ) {
-                $(recipe).hide();
-                $(recipe)
-                        .find(".recipe-ingredient")
-                        .each(function (_, ingredient) {
-                            let ingredientName = $(ingredient).text();
-                            if (!(jQuery.inArray(ingredientName, sel_ingredients) === -1))
-                            {
-                                $(recipe).show();
-                                return false;
-                            }
-                        });
-            });
-        }
+
+        let input = document.createElement('input');
+        $(input)
+                .attr("type", "text")
+                .attr("name", "ingredients[]")
+                .val(ingredients);
+
+        let form = document.createElement('form');
+        $(form)
+                .attr("method", "POST")
+                .attr("action", "/recipes/search")
+                .html(input)
+                .submit();
     });
 
+    $(document).on('click', '.ingredient', function () {
+        let newClass = "ingredient-selected text-success";
+        let $ingredient = $(this);
+        if (!$ingredient.hasClass(newClass))
+        {
+            $ingredient.addClass(newClass);
+            $ingredient.hide();
+
+            let text = $ingredient.text();
+            let data_id = $ingredient.attr("data_object_id");
+
+            let d = document.createElement('div');
+            $(d).addClass("m-1 py-1 px-2 btn btn-outline-danger ingredient-to-search")
+                    .html(text)
+                    .attr("data_object_id", data_id)
+                    .insertAfter($("#searchByIngredients").parent())
+                    .click(function () {
+                        $ingredient.removeClass(newClass);
+                        $(this).remove();
+                    });
+        }
+    });
 </script>
 
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
