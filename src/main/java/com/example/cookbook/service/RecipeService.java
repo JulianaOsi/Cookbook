@@ -2,6 +2,7 @@ package com.example.cookbook.service;
 
 import com.example.cookbook.domain.*;
 import com.example.cookbook.repo.IngredientRepo;
+import com.example.cookbook.repo.IngredientTypeRepo;
 import com.example.cookbook.repo.RecipeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,34 +22,35 @@ public class RecipeService {
     private IngredientRepo ingredientRepo;
 
     @Autowired
-    PhotoService photoService;
+    private IngredientTypeRepo ingredientTypeRepo;
 
     @Autowired
-    HibernateSearchService searchService;
+    private PhotoService photoService;
+
+    @Autowired
+    private HibernateSearchService searchService;
 
     public void addRecipe(User author,
                           String title,
                           String text,
                           MultipartFile file,
-                          String[] ingredientNames,
+                          String[] ingredientTypeNames,
                           int[] ingredientAmounts) throws IOException {
         Recipe recipe = new Recipe(author, title, text);
 
         photoService.savePhoto(recipe, file);
         recipeRepo.save(recipe);
-
-        for (int i = 0; i < ingredientNames.length; i++) {
-            ingredientRepo.save(new Ingredient(
-                    recipe,
-                    Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()),
-                    ingredientAmounts[i]));
-        }
+        saveIngredients(recipe, ingredientTypeNames, ingredientAmounts);
     }
 
-    public Iterable<Recipe> getRecipes(String text) {
-        Iterable<Recipe> recipes = text == null
-                ? recipeRepo.findAll()
-                : searchService.search(text);
+    public Iterable<Recipe> getRecipes(String text, List<Long> ingredientsId) {
+        Iterable<Recipe> recipes;
+        if (text != null && !text.equals("")) {
+            recipes = searchService.search(text);
+        } else if (ingredientsId != null && ingredientsId.size() != 0) {
+            recipes = recipeRepo.findByIngredientTypesId(ingredientsId);
+        } else
+            recipes = recipeRepo.findAll();
         Collections.reverse((List<?>) recipes);
         return recipes;
     }
@@ -76,7 +78,7 @@ public class RecipeService {
             String title,
             String text,
             MultipartFile file,
-            String[] ingredientNames,
+            String[] ingredientTypeNames,
             int[] ingredientAmounts) throws IOException {
         if (isAuthor(userId, recipeId)) {
 
@@ -89,14 +91,22 @@ public class RecipeService {
             recipeRepo.save(updatingRecipe);
 
             ingredientRepo.deleteAll(updatingRecipe.getIngredients());
-            for (int i = 0; i < ingredientNames.length; i++) {
-                ingredientRepo.save(new Ingredient(
-                        updatingRecipe,
-                        Ingredient.IngredientType.valueOf(ingredientNames[i].toUpperCase()),
-                        ingredientAmounts[i]));
-            }
+            saveIngredients(updatingRecipe, ingredientTypeNames, ingredientAmounts);
         }
     }
 
-
+    private void saveIngredients(Recipe recipe, String[] ingredientTypeNames, int[] ingredientAmounts) {
+        for (int i = 0; i < ingredientTypeNames.length; i++) {
+            String typeName = ingredientTypeNames[i];
+            IngredientType ingredientType = ingredientTypeRepo.findByName(typeName);
+            if (ingredientType == null) {
+                ingredientType = new IngredientType(typeName);
+                ingredientTypeRepo.save(ingredientType);
+            }
+            ingredientRepo.save(new Ingredient(
+                    recipe,
+                    ingredientType,
+                    ingredientAmounts[i]));
+        }
+    }
 }
