@@ -81,10 +81,6 @@ function processLetters(input){
                 <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Out"/>
             </form>
         </div>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
     </div>
 </nav>
 
@@ -116,9 +112,9 @@ function processLetters(input){
                         <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]"
                                 aria-expanded="false" required>
                             <option value="">Choose ingredient...</option>
-                            {{#ingredients}}
+                            {{#ingredientTypes}}
                                 <option value="{{name}}">{{name}}</option>
-                            {{/ingredients}}
+                            {{/ingredientTypes}}
                         </select>
                         <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]"
                                placeholder="Count" required>
