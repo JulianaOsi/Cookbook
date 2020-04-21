@@ -43,11 +43,6 @@
         display: none;
     }
 
-    table {
-        position: absolute;
-        height: 100px;
-    }
-
     .truncated-recipe {
         height: 68px;
         overflow: hidden;
@@ -117,11 +112,9 @@
 <div class="p-2">
     <div class="p-2">
         <ul class="overflow-auto list-unstyled ingredient-dropdown" style="height: auto; max-height: 200px; position: absolute">
-            <li data_object_id="1" class="ingredient p-2 border-top">Milk</li>
-            <li data_object_id="2" class="ingredient p-2 border-top">Potato</li>
-            <li data_object_id="3" class="ingredient p-2 border-top">Cucumber</li>
-            <li data_object_id="4" class="ingredient p-2 border-top">Tomato</li>
-            <li data_object_id="5" class="ingredient p-2 border-top">Salad</li>
+            {{#ingredientTypes}}
+                <li data_object_id="{{id}}" class="ingredient p-2 border-top">{{name}}</li>
+            {{/ingredientTypes}}
         </ul>
     </div>
 </div>
@@ -166,7 +159,7 @@
 <!-- Optional JavaScript -->
 <script>
     window.onload = function(){
-        var width = $("#searchByIngredients").parent().width();
+        let width = $("#searchByIngredients").parent().width();
         $(".ingredient-dropdown").css('width', width);
     };
 
@@ -179,7 +172,7 @@
 
     $(document).mouseup(function(e)
     {
-        var container = $(".ingredient");
+        let container = $(".ingredient");
 
         if (!container.is(e.target) && container.has(e.target).length === 0)
             container.hide();
@@ -187,8 +180,8 @@
 
     $( "#searchByIngredients" ).on({
         keyup: function() {
-            var $cells = $("li.ingredient:not(.ingredient-selected)");
-            var val = $.trim(this.value).toUpperCase();
+            let $cells = $("li.ingredient:not(.ingredient-selected)");
+            let val = $.trim(this.value).toUpperCase();
             if (val === "") {
                 $cells.hide();
             }
@@ -210,15 +203,16 @@
         let input = document.createElement('input');
         $(input)
                 .attr("type", "text")
-                .attr("name", "ingredients[]")
+                .attr("name", "ingredientsId[]")
                 .val(ingredients);
 
         let form = document.createElement('form');
         $(form)
-                .attr("method", "POST")
-                .attr("action", "/recipes/search")
                 .html(input)
-                .submit();
+                .appendTo("body")
+                .hide()
+                .submit()
+                .remove();
     });
 
     $(document).on('click', '.ingredient', function () {
