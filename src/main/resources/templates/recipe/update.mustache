@@ -12,48 +12,76 @@
     <title>Update</title>
 
     <style type="text/css">
+        body {
+            padding-top: 5rem;
+        }
+
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .ingredient {
+            cursor: pointer;
+            display: none;
+        }
+        .ingredient-dropdown {
+            z-index: 1000;
+        }
     </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
-$(document).ready(function(){
-    $("#addIngredientGroupButton").click(function() {
-        var selection = $(this).prev().children().first().children().first();
+        $(document).ready(function(){
+            $("#addIngredientGroupButton").click(function() {
+                let prev = $(this).prev();
+                let clone = prev.clone();
+                clone.insertAfter(prev);
+                clone
+                        .find(".searcher")
+                        .val("")
+                        .text("")
+                        .attr("placeholder", "Ingredient");
+                clone
+                        .find(".counter")
+                        .val("")
+                        .text("")
+                        .attr("placeholder", "Count");
 
-        var newSelectId = "inputGroupSelect" + ($("select").length + 1);
+            });
+        });
 
-        var inputGroup = selection.parent().parent().last().clone();
-        var newSelection = inputGroup.children().first().children().first();
-        var newInput = inputGroup.children().first().children().last();
+        function processDigits(input){
+            let value = input.value;
+            let numbers = value.replace(/[^0-9]/g, "");
+            input.value = numbers;
+        }
 
-        newSelection.attr("id", newSelectId);
-        newInput.val("");
-        selection.parent().parent().last().after(inputGroup);
-    });
-});
-function removeIngredient(button) {
-    var list = document.getElementsByTagName("select");
-    if (list.length > 1){
-        button.parentElement.remove();
-    }
-};
-
-function processDigits(input){
-    let value = input.value;
-    let numbers = value.replace(/[^0-9]/g, "");
-    input.value = numbers;
-}
-
-function processLetters(input){
-    let value = input.value;
-    let letters = value.replace(/[0-9]/g, "");
-    input.value = letters;
-}
+        function processLetters(input){
+            let value = input.value;
+            let letters = value.replace(/[0-9]/g, "");
+            input.value = letters;
+        }
     </script>
 
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <a class="navbar-brand" href="/recipes">Cookbook</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,78 +107,151 @@ function processLetters(input){
         </div>
     </div>
 </nav>
-
-<div class="d-flex p-2 justify-content-center">
-    <form method="post" style="width: 740px;" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Name of recipe</label>
-            <div class="input-group mb-3 px-2">
-                <input type="text" class="form-control" name="title" id="exampleFormControlInput1"
-                       value="{{recipe.title}}"
-                       placeholder="{{recipe.title}}" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="inputGroupFile02">Picture</label>
-            <div class="input-group mb-3 px-2">
-                <div class="custom-file">
-                    {{#recipe.filename}}
-                        <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
-                               value="{{recipe.filename}}"
-                               accept=".jpg, .jpeg, .png">
-                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">
-                            {{recipe.filename}}</label>
-                    {{/recipe.filename}}
-                    {{^recipe.filename}}
-                        <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
-                               value="https://via.placeholder.com/200x200?text=Pizza+margarita"
-                               accept=".jpg, .jpeg, .png">
-                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">
-                            https://via.placeholder.com/200x200?text=Pizza+margarita</label>
-                    {{/recipe.filename}}
+<main role="main" class="container">
+    <div class="d-flex p-2 justify-content-center">
+        <form method="post" style="width: 740px;" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Name of recipe</label>
+                <div class="input-group mb-3 px-2">
+                    <input type="text" class="form-control" name="title" id="exampleFormControlInput1"
+                           value="{{recipe.title}}"
+                           placeholder="{{recipe.title}}" required>
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="inputGroupSelect02">Ingredients</label>
-            {{#recipe.ingredients}}
-            <div class="input-group mb-3 px-2">
-                <div class="col-xs-4 d-flex">
-                    <select class="custom-select" data-width="auto" id="inputGroupSelect1" name="select[]"
-                            aria-expanded="false" required>
-                        <option value="{{type.name}}">{{type.name}}</option>
-                        {{#ingredientTypes}}
-                            <option value="{{name}}">{{name}}</option>
-                        {{/ingredientTypes}}
-                    </select>
-                    <input type="text" oninput="processDigits(this)" class="form-control" name="counter[]" placeholder="{{amount}}"
-                           value="{{amount}}" required>
+            <div class="form-group">
+                <label for="inputGroupFile02">Picture</label>
+                <div class="input-group mb-3 px-2">
+                    <div class="custom-file">
+                        {{#recipe.filename}}
+                            <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
+                                   value="{{recipe.filename}}"
+                                   accept=".jpg, .jpeg, .png">
+                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">
+                                {{recipe.filename}}</label>
+                        {{/recipe.filename}}
+                        {{^recipe.filename}}
+                            <input type="file" name="file" class="custom-file-input" id="inputGroupFile02"
+                                   value="https://via.placeholder.com/200x200?text=Pizza+margarita"
+                                   accept=".jpg, .jpeg, .png">
+                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">
+                                https://via.placeholder.com/200x200?text=Pizza+margarita</label>
+                        {{/recipe.filename}}
+                    </div>
                 </div>
-                <button type="button" class="close px-2" onclick="removeIngredient(this)" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
-            {{/recipe.ingredients}}
-            <div class="btn-save btn btn-primary btn-sm d-flex mx-auto justify-content-center" style="width: 70px;"
-                 id="addIngredientGroupButton">Add
+            <div class="form-group">
+                <label for="inputGroupSelect02">Ingredients</label>
+                {{#recipe.ingredients}}
+                    <div class="input-group mb-3 px-2">
+                        <div class="col-xs-4 d-flex">
+                            <div class="d-flex flex-row flex-wrap p-2 border">
+                                <div class="d-flex flex-wrap m-1 bg-light">
+                                    <div><input type="text" oninput="processLetters(this)" class="searcher text-success bg-light form-control border-0 py-1"
+                                                name="select[]"
+                                                value="{{type.name}}" placeholder="Ingredient" required></div>
+                                    <div><input type="text" oninput="processDigits(this)" class="counter form-control rounded-0"
+                                                name="counter[]"
+                                                value="{{amount}}" placeholder="Count" required></div>
+                                </div>
+                            </div>
+                            <ul class="overflow-auto list-unstyled ingredient-dropdown bg-white" style="height: auto; max-height: 200px; position: absolute">
+                                {{#ingredientTypes}}
+                                    <li data_object_type="{{name}}" class="ingredient p-2 border-bottom bg-light">{{name}}</li>
+                                {{/ingredientTypes}}
+                            </ul>
+                        </div>
+                        <button type="button" class="close px-2 ingredient-remover" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {{/recipe.ingredients}}
+                <div class="btn-save btn btn-primary btn-sm d-flex mx-auto justify-content-center" style="width: 70px;"
+                     id="addIngredientGroupButton">Add
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="exampleFormControlTextarea1">Recipe text</label>
-            <div class="input-group mb-3 px-2">
-                <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3" required>{{recipe.text}}</textarea>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Recipe text</label>
+                <div class="input-group mb-3 px-2">
+                    <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3" required>{{recipe.text}}</textarea>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success btn-sm btn-block">Save</button>
-        </div>
-    </form>
-
-</div>
-
+            <div class="form-group">
+                <button type="submit" class="btn btn-success btn-sm btn-block">Save</button>
+            </div>
+        </form>
+    </div>
+</main>
 
 <!-- Optional JavaScript -->
-<!--<script src="add_ingredients.js"></script>-->
+<script>
+    JQUERY4U = {
+        hideSearched: function () {
+            $(".ingredient").hide();
+        }
+    }
+
+    window.onload = function(){
+        let $neededParent = $(".searcher").parent().parent().parent().parent();
+        let width = $neededParent.width();
+        let height = $neededParent.height();
+
+        $(".ingredient-dropdown")
+                .css('width', width)
+                .css('top', height);
+    };
+
+    $(document).ready(function(){
+        $.fn.setClasses = function(classes) {
+            this.attr('class', classes);
+            return this;
+        };
+
+        $( ".ingredient" ).hover(
+                function() {
+                    $( this ).addClass("text-white").removeClass("bg-light").addClass("bg-secondary");
+
+                }, function() {
+                    $( this ).removeClass("text-white").removeClass("bg-secondary").addClass("bg-light");
+                }
+        );
+    });
+
+    $(document).mouseup(function(e)
+    {
+        let container = $(".ingredient");
+        if (!container.is(e.target) && container.has(e.target).length === 0)
+            container.hide();
+    });
+
+
+    $(document).on('keyup', '.searcher', function () {
+        let $cells = $(this).parent().parent().parent().next().find("li.ingredient");
+        let val = $.trim(this.value).toUpperCase();
+        if (val === "") {
+            $cells.hide();
+        }
+        else {
+            $cells.hide();
+            $cells.filter(function() {
+                return -1 != $(this).text().toUpperCase().indexOf(val);
+            }).show();
+        }
+    });
+
+    $(document).on('click', '.ingredient-remover', function () {
+        if ($(".searcher").length > 1)
+            $(this).parent().remove();
+    });
+
+    $(document).on('click', '.ingredient', function () {
+        let $ingredient = $(this);
+        let data = $ingredient.attr("data_object_type");
+        let $searcher = $ingredient.parent().parent().find(".searcher");
+        $searcher.val(data);
+        JQUERY4U.hideSearched();
+    });
+
+</script>
 
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
