@@ -61,4 +61,8 @@ public class ReactionService {
         }
         return null;
     }
+
+    public List<Reaction> getRecipeReactions(Recipe recipe) {
+        return reactionRepo.findByRecipeOrderByCountDesc(recipe);
+    }
 }

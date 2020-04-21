@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-//import sun.rmi.runtime.Log;
-//import sun.security.util.Debug;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -47,7 +44,7 @@ public class RecipeController {
 
         boolean isUserAuthorized = user != null;
         model.put("isUserAuthorized", isUserAuthorized);
-      
+
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
         model.put("recipes", recipeService.getRecipes(search, ingredientsId));
         return new ModelAndView("recipes", model);
@@ -92,9 +89,8 @@ public class RecipeController {
 
         model.put("ingredients", recipe.getIngredients());
         Map<Comment, Boolean> comments = new LinkedHashMap<>();
-        List<Comment> commentList = recipe.getComments();
-        commentList.sort(Comparator.comparing(Comment::getTime, LocalDateTime::compareTo).reversed());
-        commentList
+        commentService
+                .getRecipeComments(recipe)
                 .forEach(comment -> {
                     boolean hasAccess = isUserAuthorized && commentService.isAuthor(user.getId(), comment.getId());
                     comments.put(comment, hasAccess);
@@ -102,10 +98,7 @@ public class RecipeController {
         model.put("comments", comments.entrySet());
 
         model.put("reactionsTypes", Reaction.ReactionType.values());
-        List<Reaction> reactionList = recipe.getReactions();
-        Comparator<Reaction> compareByCount = Comparator.comparingInt(Reaction::getCount);
-        reactionList.sort(compareByCount.reversed());
-        model.put("reactions", reactionList);
+        model.put("reactions", reactionService.getRecipeReactions(recipe));
 
         return new ModelAndView("recipe/page");
     }
@@ -125,6 +118,14 @@ public class RecipeController {
             @PathVariable("id") long recipeId) {
         recipeService.deleteRecipe(user.getId(), recipeId);
         return new RedirectView("/recipes");
+    }
+
+    @PostMapping("user/profile/recipe/{id}/delete")
+    public RedirectView deleteRecipeFromProfile(
+            @AuthenticationPrincipal User user,
+            @PathVariable("id") long recipeId) {
+        recipeService.deleteRecipe(user.getId(), recipeId);
+        return new RedirectView("user/profile");
     }
 
     @GetMapping("recipe/page/{id}/update")

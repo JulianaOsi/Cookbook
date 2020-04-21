@@ -22,14 +22,6 @@ public class RegistrationController {
         return new ModelAndView("registration");
     }
 
-    @PostMapping("/user/account")
-    public ModelAndView getAccountPage(
-            @AuthenticationPrincipal User user,
-            Map<String, Object> model) {
-        model.put("user", user);
-        return new ModelAndView("/account");
-    }
-
     @PostMapping("/registration")
     public ModelAndView addUser(User user, Map<String,Object> model) {
         if(registrationService.isUserExists(user)) {

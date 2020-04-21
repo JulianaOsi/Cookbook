@@ -18,6 +18,7 @@ public class Recipe {
     @Field
     private String title;
 
+    @Column(length = 10000)
     private String text;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
