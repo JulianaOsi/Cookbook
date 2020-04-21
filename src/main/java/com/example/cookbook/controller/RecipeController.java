@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+//import sun.rmi.runtime.Log;
+//import sun.security.util.Debug;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -39,8 +41,9 @@ public class RecipeController {
     @GetMapping("recipes")
     public ModelAndView getRecipes(
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) List<Long> ingredientsId,
+            @RequestParam(required = false, value = "ingredientsId[]") List<Long> ingredientsId,
             Map<String, Object> model) {
+        //System.out.println(ingredientsId);
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
         model.put("recipes", recipeService.getRecipes(search, ingredientsId));
         return new ModelAndView("recipes", model);
