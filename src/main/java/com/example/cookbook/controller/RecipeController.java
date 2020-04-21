@@ -40,18 +40,26 @@ public class RecipeController {
 
     @GetMapping("recipes")
     public ModelAndView getRecipes(
+            @AuthenticationPrincipal User user,
             @RequestParam(required = false) String search,
             @RequestParam(required = false, value = "ingredientsId[]") List<Long> ingredientsId,
             Map<String, Object> model) {
-        //System.out.println(ingredientsId);
+
+        boolean isUserAuthorized = user != null;
+        model.put("isUserAuthorized", isUserAuthorized);
+      
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
         model.put("recipes", recipeService.getRecipes(search, ingredientsId));
         return new ModelAndView("recipes", model);
     }
 
     @GetMapping("recipe/add")
-    public ModelAndView getRecipeAddForm(Map<String, Object> model) {
+    public ModelAndView getRecipeAddForm(
+            @AuthenticationPrincipal User user,
+            Map<String, Object> model) {
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
+        boolean isUserAuthorized = user != null;
+        model.put("isUserAuthorized", isUserAuthorized);
         return new ModelAndView("recipe/add", model);
     }
 
@@ -121,10 +129,13 @@ public class RecipeController {
 
     @GetMapping("recipe/page/{id}/update")
     public ModelAndView getRecipeUpdateForm(
+            @AuthenticationPrincipal User user,
             @PathVariable("id") long recipeId,
             Map<String, Object> model) {
         model.put("recipe", recipeService.getRecipe(recipeId));
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
+        boolean isUserAuthorized = user != null;
+        model.put("isUserAuthorized", isUserAuthorized);
         return new ModelAndView("/recipe/update");
     }
 
