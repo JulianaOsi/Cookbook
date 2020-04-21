@@ -8,9 +8,12 @@ public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private IngredientType type;
 
     private int amount;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "type_id")
+    private IngredientType type;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recipe_id")
@@ -23,24 +26,6 @@ public class Ingredient {
         this.recipe = recipe;
         this.type = type;
         this.amount = amount;
-    }
-
-    public enum IngredientType {
-
-        EGG("egg"),
-        CARROT("carrot"),
-        POTATO("potato"),
-        TOMATO("tomato");
-
-        private final String name;
-
-        IngredientType(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
     }
 
     public Long getId() {

@@ -2,6 +2,7 @@ package com.example.cookbook.controller;
 
 import com.example.cookbook.domain.*;
 import com.example.cookbook.service.CommentService;
+import com.example.cookbook.service.IngredientTypeService;
 import com.example.cookbook.service.ReactionService;
 import com.example.cookbook.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class RecipeController {
     ReactionService reactionService;
 
     @Autowired
+    IngredientTypeService ingredientTypeService;
+
+    @Autowired
     CommentService commentService;
 
     @GetMapping("/")
@@ -35,15 +39,16 @@ public class RecipeController {
     @GetMapping("recipes")
     public ModelAndView getRecipes(
             @RequestParam(required = false) String search,
+            @RequestParam(required = false) List<Long> ingredientsId,
             Map<String, Object> model) {
-        List<Recipe> recipes = (List<Recipe>) recipeService.getRecipes(search);
-        model.put("recipes", recipeService.getRecipes(search));
+        model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
+        model.put("recipes", recipeService.getRecipes(search, ingredientsId));
         return new ModelAndView("recipes", model);
     }
 
     @GetMapping("recipe/add")
     public ModelAndView getRecipeAddForm(Map<String, Object> model) {
-        model.put("ingredients", Ingredient.IngredientType.values());
+        model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
         return new ModelAndView("recipe/add", model);
     }
 
@@ -52,10 +57,10 @@ public class RecipeController {
             @AuthenticationPrincipal User user,
             @RequestParam String title,
             @RequestParam String text,
-            @RequestParam(value = "select[]") String[] ingredientNames,
+            @RequestParam(value = "select[]") String[] ingredientTypeNames,
             @RequestParam(value = "counter[]") int[] ingredientAmounts,
             @RequestParam("file") MultipartFile file) throws IOException {
-        recipeService.addRecipe(user, title, text, file, ingredientNames, ingredientAmounts);
+        recipeService.addRecipe(user, title, text, file, ingredientTypeNames, ingredientAmounts);
         return new RedirectView("/recipes");
     }
 
@@ -116,7 +121,7 @@ public class RecipeController {
             @PathVariable("id") long recipeId,
             Map<String, Object> model) {
         model.put("recipe", recipeService.getRecipe(recipeId));
-        model.put("ingredient_types", Ingredient.IngredientType.values());
+        model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
         return new ModelAndView("/recipe/update");
     }
 
@@ -127,9 +132,9 @@ public class RecipeController {
             @RequestParam String title,
             @RequestParam String text,
             @RequestParam("file") MultipartFile file,
-            @RequestParam(value = "select[]") String[] ingredientNames,
+            @RequestParam(value = "select[]") String[] ingredientTypeNames,
             @RequestParam(value = "counter[]") int[] ingredientAmounts) throws IOException {
-        recipeService.updateRecipe(user.getId(), recipeId, title, text, file, ingredientNames, ingredientAmounts);
+        recipeService.updateRecipe(user.getId(), recipeId, title, text, file, ingredientTypeNames, ingredientAmounts);
         return new RedirectView("/recipe/page/{id}");
     }
 
