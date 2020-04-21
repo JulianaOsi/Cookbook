@@ -70,12 +70,22 @@ function processLetters(input){
             </li>
         </ul>
         <div class="d-flex">
-            <form action="/logout" method="post">
-                <input class="btn btn-outline-primary border-0 my-2 my-sm-0" type="submit" value="Sign In"/>
-            </form>
-            <form action="/logout" method="post">
-                <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Out"/>
-            </form>
+            {{^isUserAuthorized}}
+                <form action="/logout" method="post">
+                    <input class="btn btn-outline-primary border-0 my-2 my-sm-0" type="submit" value="Sign In"/>
+                </form>
+                <form action="/registration" method="get">
+                    <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Up"/>
+                </form>
+            {{/isUserAuthorized}}
+            {{#isUserAuthorized}}
+                <form action="/user/account" method="post">
+                    <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Account"/>
+                </form>
+                <form action="/logout" method="post">
+                    <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Out"/>
+                </form>
+            {{/isUserAuthorized}}
         </div>
     </div>
 </nav>
