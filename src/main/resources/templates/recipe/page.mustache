@@ -79,7 +79,6 @@ function submitSignIn(button) {
     form.action = '/logout';
     form.method = 'POST';
     form.innerHTML = '<input type="submit" value="Sign In">';
-// the form must be in the document to submit it
     document.body.append(form);
     form.submit();
 }
