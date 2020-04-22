@@ -8,6 +8,8 @@ import com.example.cookbook.repo.RecipeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CommentService {
     @Autowired
@@ -47,5 +49,9 @@ public class CommentService {
                 .getOne(commentId)
                 .getAuthor()
                 .getId() == userId;
+    }
+
+    public List<Comment> getRecipeComments(Recipe recipe){
+        return commentRepo.findByRecipeOrderByTimeDesc(recipe);
     }
 }

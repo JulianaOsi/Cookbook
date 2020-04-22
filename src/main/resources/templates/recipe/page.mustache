@@ -124,8 +124,8 @@ function onCancelEditingComment(button) {
                 </form>
             {{/isUserAuthorized}}
             {{#isUserAuthorized}}
-                <form action="/user/account" method="post">
-                    <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Account"/>
+                <form action="/user/profile" method="get">
+                    <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Profile"/>
                 </form>
                 <form action="/logout" method="post">
                     <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Out"/>
@@ -219,7 +219,7 @@ function onCancelEditingComment(button) {
                             <div class="d-flex justify-content-between align-items-center w-100">
                                 <div>
                                     <strong class="text-gray-dark">{{key.author.username}}</strong>
-                                    <a class="px-1 text-muted">{{key.simpleTime}}</a>
+                                    <a class="px-1 text-muted">{{key.getFormattedTime}}</a>
 <!--                                    <a class="px-1 text-primary">Reply</a>-->
                                 </div>
                                 <div>

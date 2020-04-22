@@ -1,7 +1,11 @@
 package com.example.cookbook.repo;
 
 import com.example.cookbook.domain.Comment;
+import com.example.cookbook.domain.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface CommentRepo extends JpaRepository<Comment, Long> {
+    List<Comment> findByRecipeOrderByTimeDesc(Recipe recipe);
 }
