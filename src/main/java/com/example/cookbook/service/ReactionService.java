@@ -6,6 +6,7 @@ import com.example.cookbook.domain.User;
 import com.example.cookbook.repo.ReactionRepo;
 import com.example.cookbook.repo.RecipeRepo;
 import com.example.cookbook.repo.UserRepo;
+import com.example.cookbook.service.exception.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +26,11 @@ public class ReactionService {
     private UserRepo userRepo;
 
     @Transactional
-    public void addReaction(User user, long recipeId, String reactionTypeName) {
-        if (user == null) return;
+    public void addReaction(User user, long recipeId, String reactionTypeName) throws NotAuthorizedException {
+        if (user == null) throw new NotAuthorizedException();
 
-        Recipe recipe = recipeRepo.getOne(recipeId);
-        Reaction.ReactionType reactionType = Reaction.ReactionType.getByName(reactionTypeName);
+        final Recipe recipe = recipeRepo.getOne(recipeId);
+        final Reaction.ReactionType reactionType = Reaction.ReactionType.getByName(reactionTypeName);
 
         Reaction reaction = findReactionByTypeName(reactionTypeName, recipe.getReactions());
 
@@ -47,12 +48,11 @@ public class ReactionService {
             reactionRepo.delete(reaction);
             return;
         }
-
         reactionRepo.save(reaction);
     }
 
     private Reaction findReactionByTypeName(String reactionTypeName, List<Reaction> reactions) {
-        Reaction.ReactionType reactionType = Reaction.ReactionType.getByName(reactionTypeName);
+        final Reaction.ReactionType reactionType = Reaction.ReactionType.getByName(reactionTypeName);
 
         for (Reaction reaction : reactions) {
             if (reaction.getType() == reactionType) {

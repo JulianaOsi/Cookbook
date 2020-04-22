@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class IngredientTypeService {
+public final class IngredientTypeService {
     @Autowired
     private IngredientTypeRepo ingredientTypeRepo;
 

@@ -6,37 +6,40 @@ import com.example.cookbook.domain.Role;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.repo.CommentRepo;
 import com.example.cookbook.repo.RecipeRepo;
+import com.example.cookbook.service.exception.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CommentService {
+public final class CommentService {
     @Autowired
     private CommentRepo commentRepo;
 
     @Autowired
     private RecipeRepo recipeRepo;
 
-    public void addComment(User user, long recipeId, String text) {
-        if (user == null) return;
-        Recipe recipe = recipeRepo.getOne(recipeId);
-        Comment comment = new Comment(user, recipe, text);
+    public void addComment(User user, long recipeId, String text) throws NotAuthorizedException {
+        if (user == null) throw new NotAuthorizedException();
+        final Recipe recipe = recipeRepo.getOne(recipeId);
+        final Comment comment = new Comment(user, recipe, text);
         commentRepo.save(comment);
     }
 
-    public void updateComment(User user, long commentId, String text) {
+    public void updateComment(User user, long commentId, String text) throws NotAuthorizedException {
+        if (user == null) throw new NotAuthorizedException();
         if (isAuthorOrAdmin(user, commentId)) {
-            Comment comment = commentRepo.getOne(commentId);
+            final Comment comment = commentRepo.getOne(commentId);
             comment.setText(text);
             commentRepo.save(comment);
         }
     }
 
-    public void deleteComment(User user, long commentId) {
+    public void deleteComment(User user, long commentId) throws NotAuthorizedException {
+        if (user == null) throw new NotAuthorizedException();
         if (isAuthorOrAdmin(user, commentId)) {
-            Comment comment = commentRepo.getOne(commentId);
+            final Comment comment = commentRepo.getOne(commentId);
             commentRepo.delete(comment);
         }
     }

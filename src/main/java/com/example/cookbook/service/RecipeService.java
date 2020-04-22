@@ -4,17 +4,16 @@ import com.example.cookbook.domain.*;
 import com.example.cookbook.repo.IngredientRepo;
 import com.example.cookbook.repo.IngredientTypeRepo;
 import com.example.cookbook.repo.RecipeRepo;
+import com.example.cookbook.service.exception.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
 @Service
-public class RecipeService {
+public final class RecipeService {
     @Autowired
     private RecipeRepo recipeRepo;
 
@@ -35,8 +34,9 @@ public class RecipeService {
                           String text,
                           MultipartFile file,
                           String[] ingredientTypeNames,
-                          int[] ingredientAmounts) throws IOException {
-        Recipe recipe = new Recipe(author, title, text);
+                          int[] ingredientAmounts) throws NotAuthorizedException {
+        if (author == null) throw new NotAuthorizedException();
+        final Recipe recipe = new Recipe(author, title, text);
 
         photoService.savePhoto(recipe, file);
         recipeRepo.save(recipe);
@@ -67,7 +67,8 @@ public class RecipeService {
                 || user.getRoles().contains(Role.ADMIN);
     }
 
-    public void deleteRecipe(User user, long recipeId) {
+    public void deleteRecipe(User user, long recipeId) throws NotAuthorizedException {
+        if (user == null) throw new NotAuthorizedException();
         if (isAuthorOrAdmin(user, recipeId)) {
             recipeRepo.deleteById(recipeId);
         }
@@ -80,10 +81,10 @@ public class RecipeService {
             String text,
             MultipartFile file,
             String[] ingredientTypeNames,
-            int[] ingredientAmounts) throws IOException {
+            int[] ingredientAmounts) throws NotAuthorizedException {
+        if (user == null) throw new NotAuthorizedException();
         if (isAuthorOrAdmin(user, recipeId)) {
-
-            Recipe updatingRecipe = recipeRepo.getOne(recipeId);
+            final Recipe updatingRecipe = recipeRepo.getOne(recipeId);
             photoService.savePhoto(updatingRecipe, file);
 
             updatingRecipe.setTitle(title);
@@ -98,7 +99,7 @@ public class RecipeService {
 
     private void saveIngredients(Recipe recipe, String[] ingredientTypeNames, int[] ingredientAmounts) {
         for (int i = 0; i < ingredientTypeNames.length; i++) {
-            String typeName = ingredientTypeNames[i];
+            final String typeName = ingredientTypeNames[i];
             IngredientType ingredientType = ingredientTypeRepo.findByName(typeName);
             if (ingredientType == null) {
                 ingredientType = new IngredientType(typeName);

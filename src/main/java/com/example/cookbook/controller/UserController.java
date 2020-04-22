@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class UserController {
+public final class UserController {
     @Autowired
     RecipeService recipeService;
 
@@ -22,7 +22,7 @@ public class UserController {
             @AuthenticationPrincipal User user,
             Map<String, Object> model) {
         model.put("user", user);
-        List<Recipe> recipes = recipeService.getUserRecipes(user);
+        final List<Recipe> recipes = recipeService.getUserRecipes(user);
         model.put("recipes", recipes);
         model.put("recipesSize", recipes.size());
         return new ModelAndView("user/profile");

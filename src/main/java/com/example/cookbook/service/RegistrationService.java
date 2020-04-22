@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 
 @Service
-public class RegistrationService {
+public final class RegistrationService {
 
     @Autowired
     private UserRepo userRepo;
 
     public boolean isUserExists(User user) {
-        User userFromDb = userRepo.findByUsername(user.getUsername());
+        final User userFromDb = userRepo.findByUsername(user.getUsername());
         return userFromDb != null;
     }
 

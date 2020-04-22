@@ -3,7 +3,6 @@ package com.example.cookbook.controller;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.Map;
 
 @Controller
-public class RegistrationController {
+public final class RegistrationController {
 
     @Autowired
     RegistrationService registrationService;
