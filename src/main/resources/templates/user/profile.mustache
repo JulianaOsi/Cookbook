@@ -74,7 +74,7 @@
             </li>
         </ul>
         <div class="d-flex">
-            <form action="/user/account" method="post">
+            <form action="/user/profile" method="post">
                 <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Account"/>
             </form>
             <form action="/logout" method="post">
@@ -87,29 +87,32 @@
 <main role="main" class="container">
     <h6 class="border-bottom border-gray pb-2 mb-0">Username: {{user.username}}</h6>
     <div class="my-3 p-3 bg-white rounded">
-        <h6 class="border-bottom border-gray pb-2 mb-0">Recipes (34): </h6>
-        <div class="media text-muted pt-3 recipe" recipe_id="62">
-            <img alt="64x64" class="mr-2 rounded" src="https://via.placeholder.com/64x64?text=Pizza+margarita" style="width: 64px; height: 64px;">
-            <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                <div class="d-flex justify-content-between align-items-center w-100">
-                    <div>
-                        <strong class="text-dark">Plov</strong>
-                        <a class="px-1 text-muted">20-12-2020</a>
+        <h6 class="border-bottom border-gray pb-2 mb-0">Recipes ({{recipesSize}}): </h6>
+        {{#recipes}}
+            <div class="media text-muted pt-3 recipe" recipe_id="{{id}}">
+                <img alt="64x64" class="mr-2 rounded"
+                     src="{{#filename}}/uploads/{{filename}}{{/filename}}{{^filename}}https://via.placeholder.com/64x64?text=Pizza+margarita{{/filename}}" style="width: 64px; height: 64px;">
+                <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <div>
+                            <strong class="text-dark">{{title}}</strong>
+                            <a class="px-1 text-muted">{{time}}</a>
+                        </div>
+                        <div>
+                            <form action="/recipe/page/{{id}}/delete" method="post">
+                                <input type="submit" class="px-1 py-0 text-danger bg-transparent border-0" value="Remove">
+                            </form>
+                        </div>
                     </div>
-                    <div>
-                        <form action="/recipe/page/((id))/delete" method="post">
-                            <input type="submit" class="px-1 py-0 text-danger bg-transparent border-0" value="Remove">
-                        </form>
+                    <div class="d-flex flex-row justify-content-start align-items-center w-100 px-2 py-1 text-secondary">
+                        <strong class="pr-1">Ingredients:</strong>{{#ingredients}}<div class="text-info px-1">{{type.name}}</div>{{/ingredients}}
                     </div>
-                </div>
-                <div class="d-flex flex-row justify-content-start align-items-center w-100 px-2 py-1 text-secondary">
-                    <strong class="pr-1">Ingredients:</strong><div class="text-info px-1">milk</div><div class="text-info px-1">carrot</div><div class="text-info px-1">eggs</div>
-                </div>
-                <div class="d-flex flex-row justify-content-start align-items-center w-100 px-2 py-1 text-secondary">
-                    <strong class="pr-1">Recipe:</strong><div class="text-muted px-1 truncated-recipe">lalalalalala lalalalalala lalalalalala lalalalalala lalalalalala lalalalalala lalalalalala lalalalalala lalalalalala lalalalalala lalalalalala lalalalalala lalalalalala </div>
+                    <div class="d-flex flex-row justify-content-start align-items-center w-100 px-2 py-1 text-secondary">
+                        <strong class="pr-1">Recipe:</strong><div class="text-muted px-1 truncated-recipe">{{text}}</div>
+                    </div>
                 </div>
             </div>
-        </div>
+        {{/recipes}}
     </div>
 </main>
 
