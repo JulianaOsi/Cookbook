@@ -84,15 +84,15 @@ public class RecipeController {
         boolean isUserAuthorized = user != null;
         model.put("isUserAuthorized", isUserAuthorized);
 
-        boolean hasAccessToRecipe = isUserAuthorized && recipeService.isAuthor(user.getId(), id);
-        model.put("hasAccessToRecipe", hasAccessToRecipe);
+        boolean isAuthorOrAdmin = isUserAuthorized && recipeService.isAuthorOrAdmin(user, id);
+        model.put("isAuthorOrAdmin", isAuthorOrAdmin);
 
         model.put("ingredients", recipe.getIngredients());
         Map<Comment, Boolean> comments = new LinkedHashMap<>();
         commentService
                 .getRecipeComments(recipe)
                 .forEach(comment -> {
-                    boolean hasAccess = isUserAuthorized && commentService.isAuthor(user.getId(), comment.getId());
+                    boolean hasAccess = isUserAuthorized && commentService.isAuthorOrAdmin(user, comment.getId());
                     comments.put(comment, hasAccess);
                 });
         model.put("comments", comments.entrySet());
@@ -116,7 +116,7 @@ public class RecipeController {
     public RedirectView deleteRecipe(
             @AuthenticationPrincipal User user,
             @PathVariable("id") long recipeId) {
-        recipeService.deleteRecipe(user.getId(), recipeId);
+        recipeService.deleteRecipe(user, recipeId);
         return new RedirectView("/recipes");
     }
 
@@ -124,7 +124,7 @@ public class RecipeController {
     public RedirectView deleteRecipeFromProfile(
             @AuthenticationPrincipal User user,
             @PathVariable("id") long recipeId) {
-        recipeService.deleteRecipe(user.getId(), recipeId);
+        recipeService.deleteRecipe(user, recipeId);
         return new RedirectView("user/profile");
     }
 
@@ -149,7 +149,7 @@ public class RecipeController {
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "select[]") String[] ingredientTypeNames,
             @RequestParam(value = "counter[]") int[] ingredientAmounts) throws IOException {
-        recipeService.updateRecipe(user.getId(), recipeId, title, text, file, ingredientTypeNames, ingredientAmounts);
+        recipeService.updateRecipe(user, recipeId, title, text, file, ingredientTypeNames, ingredientAmounts);
         return new RedirectView("/recipe/page/{id}");
     }
 
@@ -176,7 +176,7 @@ public class RecipeController {
             @AuthenticationPrincipal User user,
             @PathVariable("c_id") long commentId,
             @RequestParam String text) {
-        commentService.updateComment(user.getId(), commentId, text);
+        commentService.updateComment(user, commentId, text);
         return new RedirectView("/recipe/page/{r_id}");
     }
 
@@ -184,7 +184,7 @@ public class RecipeController {
     public RedirectView deleteComment(
             @AuthenticationPrincipal User user,
             @PathVariable("c_id") long commentId) {
-        commentService.deleteComment(user.getId(), commentId);
+        commentService.deleteComment(user, commentId);
         return new RedirectView("/recipe/page/{r_id}");
     }
 }

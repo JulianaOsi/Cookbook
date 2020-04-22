@@ -59,28 +59,29 @@ public class RecipeService {
         return recipeRepo.getOne(id);
     }
 
-    public boolean isAuthor(long userId, long recipeId) {
+    public boolean isAuthorOrAdmin(User user, long recipeId) {
         return recipeRepo
                 .getOne(recipeId)
                 .getAuthor()
-                .getId() == userId;
+                .getId().equals(user.getId())
+                || user.getRoles().contains(Role.ADMIN);
     }
 
-    public void deleteRecipe(long userId, long recipeId) {
-        if (isAuthor(userId, recipeId)) {
+    public void deleteRecipe(User user, long recipeId) {
+        if (isAuthorOrAdmin(user, recipeId)) {
             recipeRepo.deleteById(recipeId);
         }
     }
 
     public void updateRecipe(
-            long userId,
+            User user,
             long recipeId,
             String title,
             String text,
             MultipartFile file,
             String[] ingredientTypeNames,
             int[] ingredientAmounts) throws IOException {
-        if (isAuthor(userId, recipeId)) {
+        if (isAuthorOrAdmin(user, recipeId)) {
 
             Recipe updatingRecipe = recipeRepo.getOne(recipeId);
             photoService.savePhoto(updatingRecipe, file);
@@ -108,5 +109,9 @@ public class RecipeService {
                     ingredientType,
                     ingredientAmounts[i]));
         }
+    }
+
+    public List<Recipe> getUserRecipes(User author) {
+        return recipeRepo.findByAuthor(author);
     }
 }

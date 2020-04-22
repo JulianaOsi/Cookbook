@@ -178,16 +178,16 @@ function onCancelEditingComment(button) {
                         <div class="d-flex justify-content-between">
                             <h5 class="card-header border-0 bg-transparent">{{recipe.title}}</h5>
                             <div class="d-flex">
-                                {{#hasAccessToRecipe}}
+                                {{#isAuthorOrAdmin}}
                                     <form action="/recipe/page/{{id}}/update" method="get">
                                         <input type="submit" class="btn btn-link" value="Edit">
                                     </form>
-                                {{/hasAccessToRecipe}}
-                                {{#hasAccessToRecipe}}
+                                {{/isAuthorOrAdmin}}
+                                {{#isAuthorOrAdmin}}
                                     <form action="/recipe/page/{{id}}/delete" method="post">
                                         <input type="submit" class="btn btn-danger rounded-0" value="Delete">
                                     </form>
-                                {{/hasAccessToRecipe}}
+                                {{/isAuthorOrAdmin}}
                             </div>
                         </div>
 

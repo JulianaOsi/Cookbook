@@ -2,6 +2,7 @@ package com.example.cookbook.service;
 
 import com.example.cookbook.domain.Comment;
 import com.example.cookbook.domain.Recipe;
+import com.example.cookbook.domain.Role;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.repo.CommentRepo;
 import com.example.cookbook.repo.RecipeRepo;
@@ -25,16 +26,16 @@ public class CommentService {
         commentRepo.save(comment);
     }
 
-    public void updateComment(long userId, long commentId, String text) {
-        if (isAuthor(userId, commentId)) {
+    public void updateComment(User user, long commentId, String text) {
+        if (isAuthorOrAdmin(user, commentId)) {
             Comment comment = commentRepo.getOne(commentId);
             comment.setText(text);
             commentRepo.save(comment);
         }
     }
 
-    public void deleteComment(long userId, long commentId) {
-        if (isAuthor(userId, commentId)) {
+    public void deleteComment(User user, long commentId) {
+        if (isAuthorOrAdmin(user, commentId)) {
             Comment comment = commentRepo.getOne(commentId);
             commentRepo.delete(comment);
         }
@@ -44,14 +45,15 @@ public class CommentService {
         return commentRepo.getOne(commentId);
     }
 
-    public boolean isAuthor(long userId, long commentId) {
+    public boolean isAuthorOrAdmin(User user, long commentId) {
         return commentRepo
                 .getOne(commentId)
                 .getAuthor()
-                .getId() == userId;
+                .getId().equals(user.getId())
+                || user.getRoles().contains(Role.ADMIN);
     }
 
     public List<Comment> getRecipeComments(Recipe recipe){
-        return commentRepo.findByRecipeOrderByTimeDesc(recipe);
+        return commentRepo.findByRecipeOrderByTime(recipe);
     }
 }
