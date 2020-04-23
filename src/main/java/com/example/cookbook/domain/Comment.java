@@ -7,9 +7,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Locale;
 
 @Entity
-public class Comment {
+public final class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -17,9 +18,7 @@ public class Comment {
     private String text;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime time;
-
-    private String simpleTime;
+    private Date time;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recipe_id")
@@ -36,10 +35,12 @@ public class Comment {
         this.author = author;
         this.recipe = recipe;
         this.text = text;
-        this.time = LocalDateTime.now();
-        String pattern = "dd-MMM-yyyy hh:mm:ss";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        this.simpleTime = simpleDateFormat.format(Date.from( time.atZone( ZoneId.systemDefault()).toInstant()));
+        this.time = new Date();
+    }
+
+    public String getFormattedTime() {
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        return simpleDateFormat.format(time);
     }
 
     public long getId() {
@@ -74,11 +75,11 @@ public class Comment {
         this.author = author;
     }
 
-    public LocalDateTime getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 }

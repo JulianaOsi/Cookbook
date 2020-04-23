@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Indexed
-public class Recipe {
+public final class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -18,6 +18,7 @@ public class Recipe {
     @Field
     private String title;
 
+    @Column(length = 10000)
     private String text;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -35,7 +36,7 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Reaction> reactions;
 
-    @OneToMany(mappedBy = "recipe", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
     public Recipe() {

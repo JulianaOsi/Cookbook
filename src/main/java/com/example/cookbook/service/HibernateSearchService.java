@@ -14,7 +14,7 @@ import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @Service
-public class HibernateSearchService {
+public final class HibernateSearchService {
     @Autowired
     private final EntityManager entityManager;
 
@@ -30,7 +30,7 @@ public class HibernateSearchService {
 
     public void initializeHibernateSearch() {
         try {
-            FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
+            final FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
             fullTextEntityManager.createIndexer().startAndWait();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -48,7 +48,7 @@ public class HibernateSearchService {
     }
 
     public List<Recipe> search(String text) {
-        Query query = queryBuilder
+        final Query query = queryBuilder
                 .keyword()
                 .fuzzy()
                 .withEditDistanceUpTo(2)
@@ -56,7 +56,7 @@ public class HibernateSearchService {
                 .onField("title")
                 .matching(text)
                 .createQuery();
-        FullTextQuery jpaQuery
+        final FullTextQuery jpaQuery
                 = fullTextEntityManager.createFullTextQuery(query, Recipe.class);
 
         return jpaQuery.getResultList();

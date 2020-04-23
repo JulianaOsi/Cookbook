@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Reaction {
+public final class Reaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

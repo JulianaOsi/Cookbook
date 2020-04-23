@@ -1,5 +1,5 @@
 target/
 .idea/
-demo.iml
+Cookbook.iml
 com.example.cookbook.domain.Recipe/
 media/uploads/
