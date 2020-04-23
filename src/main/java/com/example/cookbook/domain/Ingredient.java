@@ -3,7 +3,7 @@ package com.example.cookbook.domain;
 import javax.persistence.*;
 
 @Entity
-public class Ingredient {
+public final class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

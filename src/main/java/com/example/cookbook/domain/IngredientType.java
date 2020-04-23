@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class IngredientType {
+public final class IngredientType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

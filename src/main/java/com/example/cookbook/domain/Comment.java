@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 
 @Entity
-public class Comment {
+public final class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -39,7 +39,7 @@ public class Comment {
     }
 
     public String getFormattedTime() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return simpleDateFormat.format(time);
     }
 

@@ -5,6 +5,7 @@ import com.example.cookbook.service.CommentService;
 import com.example.cookbook.service.IngredientTypeService;
 import com.example.cookbook.service.ReactionService;
 import com.example.cookbook.service.RecipeService;
+import com.example.cookbook.service.exception.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -13,11 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.IOException;
 import java.util.*;
 
 @Controller
-public class RecipeController {
+public final class RecipeController {
     @Autowired
     RecipeService recipeService;
 
@@ -42,7 +42,7 @@ public class RecipeController {
             @RequestParam(required = false, value = "ingredientsId[]") List<Long> ingredientsId,
             Map<String, Object> model) {
 
-        boolean isUserAuthorized = user != null;
+        final boolean isUserAuthorized = user != null;
         model.put("isUserAuthorized", isUserAuthorized);
 
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
@@ -55,7 +55,7 @@ public class RecipeController {
             @AuthenticationPrincipal User user,
             Map<String, Object> model) {
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
-        boolean isUserAuthorized = user != null;
+        final boolean isUserAuthorized = user != null;
         model.put("isUserAuthorized", isUserAuthorized);
         return new ModelAndView("recipe/add", model);
     }
@@ -67,7 +67,7 @@ public class RecipeController {
             @RequestParam String text,
             @RequestParam(value = "select[]") String[] ingredientTypeNames,
             @RequestParam(value = "counter[]") int[] ingredientAmounts,
-            @RequestParam("file") MultipartFile file) throws IOException {
+            @RequestParam("file") MultipartFile file) throws NotAuthorizedException {
         recipeService.addRecipe(user, title, text, file, ingredientTypeNames, ingredientAmounts);
         return new RedirectView("/recipes");
     }
@@ -78,21 +78,21 @@ public class RecipeController {
             @PathVariable("id") long id,
             Map<String, Object> model) {
 
-        Recipe recipe = recipeService.getRecipe(id);
+        final Recipe recipe = recipeService.getRecipe(id);
         model.put("recipe", recipe);
 
-        boolean isUserAuthorized = user != null;
+        final boolean isUserAuthorized = user != null;
         model.put("isUserAuthorized", isUserAuthorized);
 
-        boolean hasAccessToRecipe = isUserAuthorized && recipeService.isAuthor(user.getId(), id);
-        model.put("hasAccessToRecipe", hasAccessToRecipe);
+        final boolean isAuthorOrAdmin = isUserAuthorized && recipeService.isAuthorOrAdmin(user, id);
+        model.put("isAuthorOrAdmin", isAuthorOrAdmin);
 
         model.put("ingredients", recipe.getIngredients());
-        Map<Comment, Boolean> comments = new LinkedHashMap<>();
+        final Map<Comment, Boolean> comments = new LinkedHashMap<>();
         commentService
                 .getRecipeComments(recipe)
                 .forEach(comment -> {
-                    boolean hasAccess = isUserAuthorized && commentService.isAuthor(user.getId(), comment.getId());
+                    boolean hasAccess = isUserAuthorized && commentService.isAuthorOrAdmin(user, comment.getId());
                     comments.put(comment, hasAccess);
                 });
         model.put("comments", comments.entrySet());
@@ -107,7 +107,7 @@ public class RecipeController {
     public RedirectView addReaction(
             @AuthenticationPrincipal User user,
             @PathVariable("id") long recipeId,
-            @RequestParam String reactionTypeName) {
+            @RequestParam String reactionTypeName) throws NotAuthorizedException {
         reactionService.addReaction(user, recipeId, reactionTypeName);
         return new RedirectView("/recipe/page/{id}");
     }
@@ -115,16 +115,16 @@ public class RecipeController {
     @PostMapping("recipe/page/{id}/delete")
     public RedirectView deleteRecipe(
             @AuthenticationPrincipal User user,
-            @PathVariable("id") long recipeId) {
-        recipeService.deleteRecipe(user.getId(), recipeId);
+            @PathVariable("id") long recipeId) throws NotAuthorizedException {
+        recipeService.deleteRecipe(user, recipeId);
         return new RedirectView("/recipes");
     }
 
     @PostMapping("user/profile/recipe/{id}/delete")
     public RedirectView deleteRecipeFromProfile(
             @AuthenticationPrincipal User user,
-            @PathVariable("id") long recipeId) {
-        recipeService.deleteRecipe(user.getId(), recipeId);
+            @PathVariable("id") long recipeId) throws NotAuthorizedException {
+        recipeService.deleteRecipe(user, recipeId);
         return new RedirectView("user/profile");
     }
 
@@ -135,7 +135,7 @@ public class RecipeController {
             Map<String, Object> model) {
         model.put("recipe", recipeService.getRecipe(recipeId));
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
-        boolean isUserAuthorized = user != null;
+        final boolean isUserAuthorized = user != null;
         model.put("isUserAuthorized", isUserAuthorized);
         return new ModelAndView("/recipe/update");
     }
@@ -148,8 +148,8 @@ public class RecipeController {
             @RequestParam String text,
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "select[]") String[] ingredientTypeNames,
-            @RequestParam(value = "counter[]") int[] ingredientAmounts) throws IOException {
-        recipeService.updateRecipe(user.getId(), recipeId, title, text, file, ingredientTypeNames, ingredientAmounts);
+            @RequestParam(value = "counter[]") int[] ingredientAmounts) throws NotAuthorizedException {
+        recipeService.updateRecipe(user, recipeId, title, text, file, ingredientTypeNames, ingredientAmounts);
         return new RedirectView("/recipe/page/{id}");
     }
 
@@ -157,7 +157,7 @@ public class RecipeController {
     public RedirectView addComment(
             @AuthenticationPrincipal User user,
             @PathVariable("id") long recipeId,
-            @RequestParam String text) {
+            @RequestParam String text) throws NotAuthorizedException {
         commentService.addComment(user, recipeId, text);
         return new RedirectView("/recipe/page/{id}");
     }
@@ -166,7 +166,7 @@ public class RecipeController {
     public RedirectView getCommentUpdateForm(
             @PathVariable("c_id") long commentId,
             Map<String, Object> model) {
-        Comment comment = commentService.getComment(commentId);
+        final Comment comment = commentService.getComment(commentId);
         model.put("comment", comment);
         return new RedirectView("/recipe/page/{r_id}");
     }
@@ -175,16 +175,16 @@ public class RecipeController {
     public RedirectView updateComment(
             @AuthenticationPrincipal User user,
             @PathVariable("c_id") long commentId,
-            @RequestParam String text) {
-        commentService.updateComment(user.getId(), commentId, text);
+            @RequestParam String text) throws NotAuthorizedException {
+        commentService.updateComment(user, commentId, text);
         return new RedirectView("/recipe/page/{r_id}");
     }
 
     @PostMapping("recipe/page/{r_id}/comment/{c_id}/delete")
     public RedirectView deleteComment(
             @AuthenticationPrincipal User user,
-            @PathVariable("c_id") long commentId) {
-        commentService.deleteComment(user.getId(), commentId);
+            @PathVariable("c_id") long commentId) throws NotAuthorizedException {
+        commentService.deleteComment(user, commentId);
         return new RedirectView("/recipe/page/{r_id}");
     }
 }
