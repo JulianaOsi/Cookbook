@@ -99,20 +99,12 @@
         </ul>
         <div class="d-flex">
             {{^isUserAuthorized}}
-                <form action="/logout" method="post">
-                    <input class="btn btn-outline-primary border-0 my-2 my-sm-0" type="submit" value="Sign In"/>
-                </form>
-                <form action="/registration" method="get">
-                    <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Up"/>
-                </form>
+                <a href = "/login" class="btn btn-outline-secondary border-0 my-2 my-sm-0">Sign In</a>
+                <a href = "/registration" class="btn btn-outline-primary border-0 my-2 my-sm-0">Sign Up</a>
             {{/isUserAuthorized}}
             {{#isUserAuthorized}}
-                <form action="/user/profile" method="get">
-                    <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Profile"/>
-                </form>
-                <form action="/logout" method="post">
-                    <input class="btn btn-outline-secondary border-0 my-2 my-sm-0" type="submit" value="Sign Out"/>
-                </form>
+                <a href = "/user/profile" class="btn btn-outline-primary border-0 my-2 my-sm-0">Profile</a>
+                <a href = "/logout" class="btn btn-outline-secondary border-0 my-2 my-sm-0">Sign Out</a>
             {{/isUserAuthorized}}
         </div>
     </div>
