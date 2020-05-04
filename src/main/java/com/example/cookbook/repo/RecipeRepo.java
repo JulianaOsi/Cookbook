@@ -15,4 +15,6 @@ public interface RecipeRepo extends JpaRepository<Recipe, Long> {
     List<Recipe> findByIngredientTypesId(List<Long> ingredientTypesId);
 
     List<Recipe> findByAuthor(User author);
+
+    List<Recipe> findAllByOrderByTimeDesc();
 }

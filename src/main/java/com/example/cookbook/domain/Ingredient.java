@@ -1,6 +1,8 @@
 package com.example.cookbook.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public final class Ingredient {
@@ -10,6 +12,35 @@ public final class Ingredient {
     private Long id;
 
     private int amount;
+
+    private Unit unit;
+    public enum Unit{
+        GRAM("гр"),
+        KILOGRAM("кг"),
+        LITER("л"),
+        MILLILITER("мл"),
+        GLASS("ст"),
+        TEASPOON("ч.л."),
+        TABLESPOON("ст.л."),
+        PIECE("шт"),
+        ;
+
+        String name;
+        Unit(String name) {
+            this.name = name;
+        }
+        String getName() {
+            return name;
+        }
+
+        public static List<String> getNames(){
+            final List<String> names = new ArrayList<>();
+            for (Unit value: Unit.values()) {
+                names.add(value.getName());
+            }
+            return names;
+        }
+    }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "type_id")
@@ -22,10 +53,11 @@ public final class Ingredient {
     public Ingredient() {
     }
 
-    public Ingredient(Recipe recipe, IngredientType type, int amount) {
+    public Ingredient(Recipe recipe, IngredientType type, int amount, String unit) {
         this.recipe = recipe;
         this.type = type;
         this.amount = amount;
+        this.unit = Unit.valueOf(unit);
     }
 
     public Long getId() {

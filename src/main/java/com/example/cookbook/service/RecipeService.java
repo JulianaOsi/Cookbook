@@ -34,13 +34,14 @@ public final class RecipeService {
                           String text,
                           MultipartFile file,
                           String[] ingredientTypeNames,
-                          int[] ingredientAmounts) throws NotAuthorizedException {
+                          int[] ingredientAmounts,
+                          String[] ingredientUnits) throws NotAuthorizedException {
         if (author == null) throw new NotAuthorizedException();
         final Recipe recipe = new Recipe(author, title, text);
 
         photoService.savePhoto(recipe, file);
         recipeRepo.save(recipe);
-        saveIngredients(recipe, ingredientTypeNames, ingredientAmounts);
+        saveIngredients(recipe, ingredientTypeNames, ingredientAmounts, ingredientUnits);
     }
 
     public Iterable<Recipe> getRecipes(String text, List<Long> ingredientsId) {
@@ -50,8 +51,7 @@ public final class RecipeService {
         } else if (ingredientsId != null && ingredientsId.size() != 0) {
             recipes = recipeRepo.findByIngredientTypesId(ingredientsId);
         } else
-            recipes = recipeRepo.findAll();
-        Collections.reverse((List<?>) recipes);
+            recipes = recipeRepo.findAllByOrderByTimeDesc();
         return recipes;
     }
 
@@ -81,7 +81,8 @@ public final class RecipeService {
             String text,
             MultipartFile file,
             String[] ingredientTypeNames,
-            int[] ingredientAmounts) throws NotAuthorizedException {
+            int[] ingredientAmounts,
+            String[] ingredientUnits) throws NotAuthorizedException {
         if (user == null) throw new NotAuthorizedException();
         if (isAuthorOrAdmin(user, recipeId)) {
             final Recipe updatingRecipe = recipeRepo.getOne(recipeId);
@@ -93,11 +94,15 @@ public final class RecipeService {
             recipeRepo.save(updatingRecipe);
 
             ingredientRepo.deleteAll(updatingRecipe.getIngredients());
-            saveIngredients(updatingRecipe, ingredientTypeNames, ingredientAmounts);
+            saveIngredients(updatingRecipe, ingredientTypeNames, ingredientAmounts, ingredientUnits);
         }
     }
 
-    private void saveIngredients(Recipe recipe, String[] ingredientTypeNames, int[] ingredientAmounts) {
+    private void saveIngredients(
+            Recipe recipe,
+            String[] ingredientTypeNames,
+            int[] ingredientAmounts,
+            String[] ingredientUnits) {
         for (int i = 0; i < ingredientTypeNames.length; i++) {
             final String typeName = ingredientTypeNames[i];
             IngredientType ingredientType = ingredientTypeRepo.findByName(typeName);
@@ -108,7 +113,8 @@ public final class RecipeService {
             ingredientRepo.save(new Ingredient(
                     recipe,
                     ingredientType,
-                    ingredientAmounts[i]));
+                    ingredientAmounts[i],
+                    ingredientUnits[i]));
         }
     }
 

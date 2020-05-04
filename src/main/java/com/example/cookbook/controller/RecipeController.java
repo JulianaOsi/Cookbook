@@ -57,6 +57,7 @@ public final class RecipeController {
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
         final boolean isUserAuthorized = user != null;
         model.put("isUserAuthorized", isUserAuthorized);
+        model.put("units", Ingredient.Unit.getNames());
         return new ModelAndView("recipe/add", model);
     }
 
@@ -67,8 +68,9 @@ public final class RecipeController {
             @RequestParam String text,
             @RequestParam(value = "select[]") String[] ingredientTypeNames,
             @RequestParam(value = "counter[]") int[] ingredientAmounts,
+            @RequestParam(value = "units[]") String[] ingredientUnits,
             @RequestParam("file") MultipartFile file) throws NotAuthorizedException {
-        recipeService.addRecipe(user, title, text, file, ingredientTypeNames, ingredientAmounts);
+        recipeService.addRecipe(user, title, text, file, ingredientTypeNames, ingredientAmounts, ingredientUnits);
         return new RedirectView("/recipes");
     }
 
@@ -137,6 +139,7 @@ public final class RecipeController {
         model.put("ingredientTypes", ingredientTypeService.getIngredientTypes());
         final boolean isUserAuthorized = user != null;
         model.put("isUserAuthorized", isUserAuthorized);
+        model.put("units", Ingredient.Unit.getNames());
         return new ModelAndView("/recipe/update");
     }
 
@@ -148,8 +151,9 @@ public final class RecipeController {
             @RequestParam String text,
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "select[]") String[] ingredientTypeNames,
-            @RequestParam(value = "counter[]") int[] ingredientAmounts) throws NotAuthorizedException {
-        recipeService.updateRecipe(user, recipeId, title, text, file, ingredientTypeNames, ingredientAmounts);
+            @RequestParam(value = "counter[]") int[] ingredientAmounts,
+            @RequestParam(value = "units[]") String[] ingredientUnits) throws NotAuthorizedException {
+        recipeService.updateRecipe(user, recipeId, title, text, file, ingredientTypeNames, ingredientAmounts, ingredientUnits);
         return new RedirectView("/recipe/page/{id}");
     }
 
