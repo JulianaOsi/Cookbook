@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Indexed
-public final class Recipe {
+public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
