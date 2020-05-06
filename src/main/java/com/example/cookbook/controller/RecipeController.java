@@ -5,6 +5,7 @@ import com.example.cookbook.service.CommentService;
 import com.example.cookbook.service.IngredientTypeService;
 import com.example.cookbook.service.ReactionService;
 import com.example.cookbook.service.RecipeService;
+import com.example.cookbook.service.exception.NoAccessException;
 import com.example.cookbook.service.exception.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -179,7 +180,7 @@ public final class RecipeController {
     public RedirectView updateComment(
             @AuthenticationPrincipal User user,
             @PathVariable("c_id") long commentId,
-            @RequestParam String text) throws NotAuthorizedException {
+            @RequestParam String text) throws NotAuthorizedException, NoAccessException {
         commentService.updateComment(user, commentId, text);
         return new RedirectView("/recipe/page/{r_id}");
     }
@@ -187,7 +188,7 @@ public final class RecipeController {
     @PostMapping("recipe/page/{r_id}/comment/{c_id}/delete")
     public RedirectView deleteComment(
             @AuthenticationPrincipal User user,
-            @PathVariable("c_id") long commentId) throws NotAuthorizedException {
+            @PathVariable("c_id") long commentId) throws NotAuthorizedException, NoAccessException {
         commentService.deleteComment(user, commentId);
         return new RedirectView("/recipe/page/{r_id}");
     }

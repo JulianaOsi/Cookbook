@@ -47,12 +47,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.2.6.RELEASE</version>
         </dependency>
 
         <!-- security -->
@@ -72,14 +67,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-orm</artifactId>
             <version>5.11.5.Final</version>
-        </dependency>
-
-        <!-- testing -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <version>2.2.6.RELEASE</version>
         </dependency>
 
     </dependencies>

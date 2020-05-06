@@ -6,6 +6,7 @@ import com.example.cookbook.domain.Role;
 import com.example.cookbook.domain.User;
 import com.example.cookbook.repo.CommentRepo;
 import com.example.cookbook.repo.RecipeRepo;
+import com.example.cookbook.service.exception.NoAccessException;
 import com.example.cookbook.service.exception.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,21 +28,19 @@ public final class CommentService {
         commentRepo.save(comment);
     }
 
-    public void updateComment(User user, long commentId, String text) throws NotAuthorizedException {
+    public void updateComment(User user, long commentId, String text) throws NotAuthorizedException, NoAccessException {
         if (user == null) throw new NotAuthorizedException();
-        if (isAuthorOrAdmin(user, commentId)) {
-            final Comment comment = commentRepo.getOne(commentId);
-            comment.setText(text);
-            commentRepo.save(comment);
-        }
+        if (!isAuthorOrAdmin(user, commentId)) throw new NoAccessException();
+        final Comment comment = commentRepo.getOne(commentId);
+        comment.setText(text);
+        commentRepo.save(comment);
     }
 
-    public void deleteComment(User user, long commentId) throws NotAuthorizedException {
+    public void deleteComment(User user, long commentId) throws NotAuthorizedException, NoAccessException {
         if (user == null) throw new NotAuthorizedException();
-        if (isAuthorOrAdmin(user, commentId)) {
-            final Comment comment = commentRepo.getOne(commentId);
-            commentRepo.delete(comment);
-        }
+        if (!isAuthorOrAdmin(user, commentId)) throw new NoAccessException();
+        final Comment comment = commentRepo.getOne(commentId);
+        commentRepo.delete(comment);
     }
 
     public Comment getComment(long commentId) {
@@ -56,7 +55,7 @@ public final class CommentService {
                 || user.getRoles().contains(Role.ADMIN);
     }
 
-    public List<Comment> getRecipeComments(Recipe recipe){
+    public List<Comment> getRecipeComments(Recipe recipe) {
         return commentRepo.findByRecipeOrderByTime(recipe);
     }
 }
