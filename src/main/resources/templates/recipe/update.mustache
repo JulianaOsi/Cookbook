@@ -149,11 +149,17 @@
                             <div class="d-flex flex-row flex-wrap p-2 border">
                                 <div class="d-flex flex-wrap m-1 bg-light">
                                     <div><input type="text" oninput="processLetters(this)" class="searcher text-success bg-light form-control border-0 py-1"
-                                                name="select[]"
+                                                name="ingredients[]"
                                                 value="{{type.name}}" placeholder="Ingredient" required></div>
                                     <div><input type="text" oninput="processDigits(this)" class="counter form-control rounded-0"
-                                                name="counter[]"
-                                                value="{{amount}}" placeholder="Count" required></div>
+                                                name="amounts[]"
+                                                value="{{amount}}" placeholder="Amount" required></div>
+                                    <select class="selectpicker border-0" name="units[]" required>
+                                        <option value="{{unit}}">{{unit.name}}</option>
+                                        {{#units}}
+                                            <option value="{{key}}">{{value.name}}</option>
+                                        {{/units}}
+                                    </select>
                                 </div>
                             </div>
                             <ul class="overflow-auto list-unstyled ingredient-dropdown bg-white" style="height: auto; max-height: 200px; position: absolute">
