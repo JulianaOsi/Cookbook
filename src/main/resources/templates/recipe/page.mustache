@@ -12,88 +12,88 @@
     <title>Recipe</title>
 
     <style type="text/css">
-    body {
-        padding-top: 5rem;
-    }
+        body {
+            padding-top: 5rem;
+        }
 
-    .truncated-recipe {
-        height: 68px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+        .truncated-recipe {
+            height: 68px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-    .left
-    {
-        float: left;
-    }
+        .left
+        {
+            float: left;
+        }
 
-    .right
-    {
-        float: right;
-    }
+        .right
+        {
+            float: right;
+        }
 
-    .selectdiv:after {
-        content: '';
-    }
+        .selectdiv:after {
+            content: '';
+        }
 
-    /* IE11 hide native button (thanks Matt!) */
-    select::-ms-expand {
-        display: none;
-    }
+        /* IE11 hide native button (thanks Matt!) */
+        select::-ms-expand {
+            display: none;
+        }
 
-    .selectdiv select {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        /* Add some styling */
+        .selectdiv select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            /* Add some styling */
 
-        display: block;
-        background-color: #ffffff;
-        background-image: none;
-        border: 1px solid #0ebeff;
-        -ms-word-break: normal;
-        word-break: normal;
-    }
+            display: block;
+            background-color: #ffffff;
+            background-image: none;
+            border: 1px solid #0ebeff;
+            -ms-word-break: normal;
+            word-break: normal;
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
-function showReactions() {
-    var window = document.getElementById("allReactionsWindow");
-    if (window.style.display === "none") {
-        window.style.display = "block";
-    } else {
-        window.style.display = "none";
-    }
-}
+        function showReactions() {
+            var window = document.getElementById("allReactionsWindow");
+            if (window.style.display === "none") {
+                window.style.display = "block";
+            } else {
+                window.style.display = "none";
+            }
+        }
 
-function submitReaction(button) {
-    var filename = button.name;
-    var formInput = document.getElementById("reactionFormInput");
-    formInput.value = filename;
-    var form = document.getElementById("reactionForm");
-    form.submit();
-}
+        function submitReaction(button) {
+            var filename = button.name;
+            var formInput = document.getElementById("reactionFormInput");
+            formInput.value = filename;
+            var form = document.getElementById("reactionForm");
+            form.submit();
+        }
 
-function submitSignIn(button) {
-    let form = document.createElement('form');
-    form.action = '/logout';
-    form.method = 'POST';
-    form.innerHTML = '<input type="submit" value="Sign In">';
-    document.body.append(form);
-    form.submit();
-}
+        function submitSignIn(button) {
+            let form = document.createElement('form');
+            form.action = '/logout';
+            form.method = 'POST';
+            form.innerHTML = '<input type="submit" value="Sign In">';
+            document.body.append(form);
+            form.submit();
+        }
 
-function onEditComment(button) {
-    var root = button.parentElement.parentElement.parentElement;
-    root.nextElementSibling.setAttribute("style", "display: none");
-    root.nextElementSibling.nextElementSibling.setAttribute("style", "display: block");
-}
+        function onEditComment(button) {
+            var root = button.parentElement.parentElement.parentElement;
+            root.nextElementSibling.setAttribute("style", "display: none");
+            root.nextElementSibling.nextElementSibling.setAttribute("style", "display: block");
+        }
 
-function onCancelEditingComment(button) {
-    var root = button.parentElement;
-    root.previousElementSibling.setAttribute("style", "display: block");
-    root.setAttribute("style", "display: none");
-}
+        function onCancelEditingComment(button) {
+            var root = button.parentElement;
+            root.previousElementSibling.setAttribute("style", "display: block");
+            root.setAttribute("style", "display: none");
+        }
     </script>
 </head>
 <body>
@@ -189,7 +189,7 @@ function onCancelEditingComment(button) {
                                 <ul class="px-2" style="list-style-type: none;">
                                     {{#ingredients}}
                                         <div class="px-1 text-info">
-                                            <li>{{type.name}} {{amount}}</li>
+                                            <li>{{type.name}}: {{amount}}<small class="px-1 text-info">{{unit.name}}</small></li>
                                         </div>
                                     {{/ingredients}}
                                 </ul>
@@ -211,7 +211,7 @@ function onCancelEditingComment(button) {
                                 <div>
                                     <strong class="text-gray-dark">{{key.author.username}}</strong>
                                     <a class="px-1 text-muted">{{key.getFormattedTime}}</a>
-<!--                                    <a class="px-1 text-primary">Reply</a>-->
+                                    <!--                                    <a class="px-1 text-primary">Reply</a>-->
                                 </div>
                                 <div>
                                     {{#value}}

@@ -2,7 +2,9 @@ package com.example.cookbook.domain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 public final class Ingredient {
@@ -15,6 +17,7 @@ public final class Ingredient {
 
     private Unit unit;
     public enum Unit{
+        MILLIGRAM("мг"),
         GRAM("гр"),
         KILOGRAM("кг"),
         LITER("л"),
@@ -33,12 +36,12 @@ public final class Ingredient {
             return name;
         }
 
-        public static List<String> getNames(){
-            final List<String> names = new ArrayList<>();
+        public static Map<String, Unit> getUnits(){
+            final Map<String, Unit> units = new LinkedHashMap<>();
             for (Unit value: Unit.values()) {
-                names.add(value.getName());
+                units.put(value.name(), value);
             }
-            return names;
+            return units;
         }
     }
 
